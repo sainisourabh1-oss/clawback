@@ -42,7 +42,7 @@ Focus starts on Cancel. A toast offers Undo afterwards. Google and Microsoft sig
 in one go; a read-only sign-in from an older version asks once to sign in again. Deleting, archiving and
 blocking need a Google or Microsoft sign-in: file imports and app-password (IMAP) connections can unsubscribe
 but not delete (IMAP delete is not implemented). Outlook is Experimental. Savings are listed per
-currency and never added together. Light and dark themes, keyboard navigation and phone width are supported.
+currency and never added together. White and black themes, keyboard navigation and phone width are supported.
 
 ## How to help
 

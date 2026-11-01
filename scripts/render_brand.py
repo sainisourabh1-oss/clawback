@@ -23,14 +23,16 @@ SHOTS = ROOT / "docs" / "screenshots"
 FONTS = ROOT / "clawback" / "web" / "static" / "fonts"
 FONT = "Inter, 'Segoe UI', system-ui, -apple-system, Helvetica, Arial, sans-serif"
 
-# Brand colours (the same tokens the web app uses).
+# Brand colours (the same tokens the web app uses). Since 2026-11-01 the app has two themes, pure black and
+# pure white, so the assets are black (dark) and white (light) with the teal mark as the only colour.
 TEAL = "#2dd4bf"       # mark tile
-INK = "#0b1f2a"        # envelope, dark backgrounds
-DEEP = "#11403d"       # dark gradient end
-ACCENT = "#0f766e"     # money figures on light
-PAPER = "#f2f7f6"      # text on dark
-MUTED_DARK = "#a9c9c4"
-MUTED_LIGHT = "#3f5a57"
+INK = "#0b1f2a"        # the mark's envelope outline
+BLACK = "#000000"      # dark backgrounds (the app's dark page)
+RAISED = "#161616"     # a card on black (the app's dark --surface)
+ACCENT = "#0f766e"     # money figures on white
+PAPER = "#f2f2f2"      # text on black (the app's dark --text)
+MUTED_DARK = "#a8a8a8"
+MUTED_LIGHT = "#525252"
 
 # The mark: a pixel-art envelope on a strict 16x16 grid, hooked by three claws that pull it back.
 # One character per pixel: t = tile (TEAL), k = outline (INK), w = paper (white), . = transparent.
@@ -107,10 +109,10 @@ def font_css() -> str:
 
 
 THEMES = {
-    "dark": dict(bg1=INK, bg2=DEEP, text=PAPER, muted=MUTED_DARK, chip_bg="#16403d", chip_stroke="#2dd4bf",
-                 chip_text="#d9f3ef", card="#f6fbfa", card_stroke="#f6fbfa", border=None),
-    "light": dict(bg1="#f4fbf9", bg2="#dcf2ed", text="#0b1f2a", muted=MUTED_LIGHT, chip_bg="#ffffff",
-                  chip_stroke="#0f766e", chip_text="#0f5e58", card="#ffffff", card_stroke="#c9dfda", border="#c9dfda"),
+    "dark": dict(bg1=BLACK, bg2=BLACK, text=PAPER, muted=MUTED_DARK, chip_bg=RAISED, chip_stroke="#2dd4bf",
+                 chip_text="#e6e6e6", card="#ffffff", card_stroke="#ffffff", border="#2e2e2e"),
+    "light": dict(bg1="#ffffff", bg2="#ffffff", text="#0a0a0a", muted=MUTED_LIGHT, chip_bg="#ffffff",
+                  chip_stroke="#0f766e", chip_text="#0f5e58", card="#ffffff", card_stroke="#d4d4d4", border="#d4d4d4"),
 }
 
 
@@ -132,11 +134,11 @@ def banner_svg(theme: str = "dark") -> str:
             f'<text x="1144" y="118" font-size="24" font-weight="600" fill="{ACCENT}">You\'ve clawed back</text>']
     y = 178
     for name, amt in rows:
-        card.append(f'<text x="1144" y="{y}" font-size="26" fill="#12201f">{name}</text>'
+        card.append(f'<text x="1144" y="{y}" font-size="26" fill="#0a0a0a">{name}</text>'
                     f'<text x="1500" y="{y}" font-size="28" font-weight="700" text-anchor="end" fill="{ACCENT}">{amt}</text>'
-                    f'<line x1="1144" x2="1500" y1="{y + 24}" y2="{y + 24}" stroke="#d6e0de" stroke-width="1.5"/>')
+                    f'<line x1="1144" x2="1500" y1="{y + 24}" y2="{y + 24}" stroke="#e0e0e0" stroke-width="1.5"/>')
         y += 68
-    card.append(f'<text x="1144" y="{y + 12}" font-size="22" fill="#4d615f">Estimates · demo data</text>')
+    card.append(f'<text x="1144" y="{y + 12}" font-size="22" fill="#525252">Estimates · demo data</text>')
     border = (f'<rect x=".75" y=".75" width="1598.5" height="478.5" rx="31.25" fill="none" stroke="{t["border"]}" stroke-width="1.5"/>'
               if t["border"] else "")
     return f"""<svg xmlns="http://www.w3.org/2000/svg" width="1600" height="480" viewBox="0 0 1600 480" role="img" aria-label="Clawback: claw back your inbox and your money">
@@ -161,13 +163,13 @@ def social_html() -> str:
     chips = "".join(f"<span>{c}</span>" for c in ("Safe unsubscribe", "Subscription finder", "Local only"))
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{font_css()}
 html,body{{margin:0;width:1280px;height:640px;overflow:hidden;font-family:{FONT}}}
-body{{background:linear-gradient(135deg,{INK},{DEEP});color:{PAPER};position:relative}}
+body{{background:{BLACK};color:{PAPER};position:relative}}
 .left{{position:absolute;left:72px;top:84px;width:600px}}
 .brand{{display:flex;align-items:center;gap:26px}} .brand svg{{width:128px;height:128px;flex:none}}
 .name{{font-size:96px;font-weight:800;letter-spacing:-3px;line-height:1}}
 .tag{{font-size:58px;font-weight:700;line-height:1.12;margin-top:52px;letter-spacing:-1px}}
 .chips{{display:flex;flex-wrap:wrap;gap:12px;margin-top:44px}}
-.chips span{{font-size:28px;font-weight:600;color:#d9f3ef;background:#16403d;border:1.5px solid rgba(45,212,191,.55);
+.chips span{{font-size:28px;font-weight:600;color:#e6e6e6;background:{RAISED};border:1.5px solid rgba(45,212,191,.55);
   border-radius:999px;padding:8px 20px}}
 .shot{{position:absolute;left:720px;top:64px;width:900px;border-radius:20px;overflow:hidden;box-shadow:0 30px 80px rgba(0,0,0,.55);
   border:1px solid rgba(255,255,255,.18);transform:perspective(1600px) rotateY(-10deg);transform-origin:left center}}
@@ -185,10 +187,10 @@ body{{background:linear-gradient(135deg,{INK},{DEEP});color:{PAPER};position:rel
 # to the panel's 16:10 shape around its centre. Re-check them when the screenshots' layout changes.
 PANEL_W, PANEL_H = 736, 460
 STEPS = [
-    ("02-newsletters.png", (60, 100, 1220, 860), "Pick the senders you no longer want"),
-    ("03-review-strip.png", (20, 355, 880, 490), "Two clicks: pick an action, then say yes"),
-    ("04-done.png", (90, 380, 960, 860), "Done, with Undo right there"),
-    ("06-paid-and-savings.png", (60, 125, 1220, 860), "See what you save, per currency"),
+    ("02-newsletters.png", (20, 85, 1260, 860), "Pick the senders you no longer want"),
+    ("03-review-strip.png", (20, 110, 880, 640), "Two clicks: pick an action, then say yes"),
+    ("04-done.png", (20, 225, 840, 860), "Done, with Undo right there"),
+    ("06-paid-and-savings.png", (20, 112, 1220, 860), "See what you save, per currency"),
 ]
 
 
@@ -216,8 +218,8 @@ def crop_steps(tmp: Path) -> list[tuple[Path, str]]:
 
 def strip_html(cells: list[tuple[Path, str]], theme: str) -> str:
     dark = theme == "dark"
-    bg, card, text, ring = ((INK, "#13262f", PAPER, "rgba(255,255,255,.10)") if dark
-                            else ("#f4fbf9", "#ffffff", "#0b1f2a", "#c9dfda"))
+    bg, card, text, ring = ((BLACK, RAISED, PAPER, "#2e2e2e") if dark
+                            else ("#ffffff", "#ffffff", "#0a0a0a", "#d4d4d4"))
     figs = "".join(f'<figure><img src="{p.as_uri()}" alt=""><figcaption><b>{i}</b>{cap}</figcaption></figure>'
                    for i, (p, cap) in enumerate(cells, 1))
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{font_css()}
@@ -226,17 +228,17 @@ html,body{{margin:0;font-family:{FONT};background:{bg};color:{text}}}
 figure{{margin:0;background:{card};border-radius:20px;padding:16px;border:1.5px solid {ring}}}
 img{{width:{PANEL_W - 32}px;height:{round((PANEL_W - 32) * PANEL_H / PANEL_W)}px;border-radius:12px;display:block;object-fit:cover}}
 figcaption{{font-size:30px;font-weight:700;margin:16px 4px 4px;display:flex;align-items:center;gap:14px;letter-spacing:-.3px}}
-figcaption b{{flex:none;width:44px;height:44px;border-radius:50%;background:{TEAL};color:{INK};font-size:24px;
+figcaption b{{flex:none;width:44px;height:44px;border-radius:50%;background:{TEAL};color:{BLACK};font-size:24px;
   display:grid;place-items:center}}
 </style></head><body><div class="wrap">{figs}</div></body></html>"""
 
 
 def frame_html(img: Path, cap: str, n: int) -> str:
     return f"""<!doctype html><html><head><meta charset="utf-8"><style>{font_css()}
-html,body{{margin:0;width:960px;height:640px;overflow:hidden;font-family:{FONT};background:{INK};color:{PAPER}}}
+html,body{{margin:0;width:960px;height:640px;overflow:hidden;font-family:{FONT};background:{BLACK};color:{PAPER}}}
 img{{position:absolute;left:24px;top:24px;width:912px;height:524px;object-fit:cover;border-radius:14px}}
 .cap{{position:absolute;left:24px;right:24px;bottom:22px;font-size:30px;font-weight:700;display:flex;gap:14px;align-items:center}}
-.cap b{{width:44px;height:44px;border-radius:50%;background:{TEAL};color:{INK};font-size:24px;display:grid;place-items:center}}
+.cap b{{width:44px;height:44px;border-radius:50%;background:{TEAL};color:{BLACK};font-size:24px;display:grid;place-items:center}}
 .cap span.n{{margin-left:auto;font-size:20px;font-weight:500;color:{MUTED_DARK};display:flex;align-items:center;gap:10px}}
 .cap span.n svg{{width:32px;height:32px}}
 </style></head><body><img src="{img.as_uri()}" alt=""><div class="cap"><b>{n}</b>{cap}<span class="n">{logo_svg(32)}Clawback · demo data</span></div></body></html>"""

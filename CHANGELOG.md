@@ -10,6 +10,15 @@ unsubscribes worked. The data folder moves to `~/.clawback` (v1 `~/.unsubscribe`
 
 This replaces the confirm sheet described in "Simpler cleanup after a scan" below.
 
+- **Black and white themes.** The dark theme is pure black (`#000000` page, neutral near-black panels
+  lifted off it by a border, near-white text) and the light theme pure white (`#ffffff` page, neutral
+  greys), replacing the blue-tinted slate of both. The theme button in the header and following the
+  system stay. The moving background is faint in both, so the page still reads as black or white; the
+  Undo toast is an opaque raised card with a border in both themes; form controls, scrollbars and the
+  mobile browser bar (`theme-color`) follow the theme. Every text colour still passes WCAG AA, checked
+  by the test suite, and the README banner, feature strip, GIF and social preview are black and white
+  to match.
+
 - After ticking senders or pressing an action nothing opens: no dialog, sheet or overlay. Click 1 turns the
   row's (or the selection bar's) buttons, in the same place, into **Yes, delete 120 emails** and **Cancel**,
   with one or two plain lines underneath and the per-sender detail folded. Only that Yes acts. Focus starts
@@ -20,7 +29,7 @@ This replaces the confirm sheet described in "Simpler cleanup after a scan" belo
   one place that asks again: the row says "Needs permission" with **Allow cleanup**, or the notice's **Sign
   in again to allow cleanup**; one consent, then the same row comes back with its Yes.
 - Compact layout: the five steps sit in the header, a one-line summary card, folded heads-up, counts in one
-  column, glass panels. A soft moving colour background is painted into a tiny canvas 8 times a second
+  column, glass panels. A faint moving colour background is painted into a tiny canvas 8 times a second
   (measured in headless Edge, which composites in software: 9 to 13 % of one core for the whole browser,
   against about 40 % for the CSS-animated version it replaces), stops while the tab is hidden and is a
   still picture under reduced motion. Text on the translucent panels is checked for WCAG AA over the brightest point of each colour

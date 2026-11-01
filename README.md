@@ -111,8 +111,8 @@ search box, a sort, and three tabs (*Newsletters & ads*, *Spam-like*, *Paid*). I
 | **Connect**: Gmail, Outlook, other email (IMAP presets) or a file import, each with its test label; or the demo. | **Two clicks, in place**: the row's buttons become "Yes, delete 120 emails" and Cancel; Cancel has the focus. No pop-up. |
 | <img src="docs/screenshots/02-newsletters.png" alt="Newsletters with three senders ticked; the bar shows 3 selected, 161 emails, with Unsubscribe, Delete all, Unsubscribe + delete all and Keep" width="420"> | <img src="docs/screenshots/04-done.png" alt="After Delete all: a toast says Deleted 120 emails from Community Forum, with an Undo button; the row shows 120 deleted" width="420"> |
 | **Pick senders**: tick several, the bar shows how many emails; nothing runs until you confirm. | **Undo right there**: Trash, Archive, Spam and filters can be taken back. |
-| <img src="docs/screenshots/08-dark.png" alt="Dark theme: savings per currency, the summary line and the newsletter list" width="420"> | <img src="docs/screenshots/12-mobile-review.png" alt="Phone width: the Community Forum row with Yes, delete 120 emails and Cancel in place of its buttons" width="200"> |
-| **Dark theme** follows your system, or pick one in the header. | **Phone width**: the same two clicks in the row, both buttons in reach. |
+| <img src="docs/screenshots/08-dark.png" alt="Black theme: savings per currency, the summary line and the newsletter list on a pure black page" width="420"> | <img src="docs/screenshots/12-mobile-review.png" alt="Phone width: the Community Forum row with Yes, delete 120 emails and Cancel in place of its buttons" width="200"> |
+| **Black or white**: the black theme follows your system, or pick one in the header. | **Phone width**: the same two clicks in the row, both buttons in reach. |
 | <img src="docs/screenshots/14-connect-presets.png" alt="Other email (IMAP) card with Proton Mail through Proton Mail Bridge chosen: Experimental label, link to Proton's Bridge guide and setup notes" width="420"> | <img src="docs/screenshots/16-all-accounts.png" alt="All accounts view: results from two mailboxes together, savings per currency, heads-up items tagged with their mailbox" width="420"> |
 | **Other providers**: pick one and the servers, sign-in help and test label fill in. | **All accounts**: every scanned mailbox in one view; the same mailbox connected twice counts once. |
 
@@ -126,7 +126,7 @@ search box, a sort, and three tabs (*Newsletters & ads*, *Spam-like*, *Paid*). I
 - Every screen works with the keyboard (visible focus, arrow keys between tabs), respects your
   system's reduced-motion setting and fits a phone-width window; the colour pairs, including text on
   the translucent panels over the brightest point of the moving background, are checked against
-  WCAG AA contrast in light and dark by the test suite.
+  WCAG AA contrast in both themes (white and black) by the test suite.
 - The app loads nothing from other servers: its font (Inter, SIL Open Font License) and icons ship
   inside the package.
 
@@ -188,7 +188,7 @@ a time estimate worked out from what earlier scans saved and each path's measure
 | Savings | Monthly, yearly and "so far" per currency for cancelled subscriptions; emails avoided per month for silenced senders; optional combined total only with your own dated rates. Shareable card with totals only (no names, no addresses). |
 | Did it work? | Honoured / Waiting / Still sending per sender, timeline, "ignored your unsubscribe" list, confirmed escalation. |
 | Privacy footprint | Every company that has your address, by volume. Draft data-deletion requests under India's DPDP Act 2023, the EU GDPR, UK GDPR or California's CCPA (drafts only; sending is confirmed twice). Not legal advice. |
-| Housekeeping | Keep-list (never suggested or touched), activity log with undo, export/import of your local data, multiple mailboxes, light/dark theme, keyboard navigation with visible focus, reduced motion respected, works on a phone-width window. |
+| Housekeeping | Keep-list (never suggested or touched), activity log with undo, export/import of your local data, multiple mailboxes, white and black themes, keyboard navigation with visible focus, reduced motion respected, works on a phone-width window. |
 
 ## How Clawback compares
 

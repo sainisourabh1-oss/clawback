@@ -24,6 +24,9 @@ flap); it does not imitate any email provider's logo.
 
 Colours: tile `#2dd4bf`, outline `#0b1f2a`, paper `#ffffff` (the same tokens the web app uses).
 
+Like the web app's two themes, every banner, strip, GIF and preview is pure black (`#000000`, text
+`#f2f2f2`) or pure white (`#ffffff`, text `#0a0a0a`), with the teal mark as the only colour.
+
 ## Files
 
 | File | Size | Used for |

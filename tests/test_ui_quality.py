@@ -1,7 +1,7 @@
 """Web UI quality checks that do not need a browser.
 
-What the user sees: every text colour meets WCAG 2.x AA contrast in light and
-dark, every colour token the stylesheet uses exists, every string the page
+What the user sees: two themes, pure white and pure black, every text colour
+meets WCAG 2.x AA contrast in both, every colour token the stylesheet uses exists, every string the page
 asks for exists (no raw "empty.paid.title" on screen), the bundled font and
 icons are served and shipped in the wheel, the page asks nothing of any other
 server, and the local server answers quickly. scripts/ui_smoke.py checks the
@@ -235,6 +235,42 @@ def _themes():
     return {"light": light, "dark": dark}
 
 
+def test_the_two_themes_are_pure_white_and_pure_black():
+    # The operator's ask (2026-11-01): black and white, both themes. The page
+    # is #ffffff or #000000, every surface and border is a neutral grey (no
+    # blue-tinted slate left over), form controls and scrollbars follow
+    # (color-scheme), and the moving background stays faint enough that the
+    # page still reads as white or black at the brightest blob.
+    css = _text("app.css")
+    themes = _themes()
+    assert themes["light"]["bg"] == "#ffffff" and themes["dark"]["bg"] == "#000000"
+    for name, tok in themes.items():
+        for key in ("bg", "surface", "surface-2", "text", "muted", "line", "line-strong"):
+            r, g, b = (int(tok[key][i:i + 2], 16) for i in (1, 3, 5))
+            assert r == g == b, (name, key, tok[key], "not a neutral grey")
+        glass, blob_o = _motion_params(name)
+        worst = max(_backdrops(tok, blob_o), key=lambda c: abs(_lum(c) - _lum(tok["bg"])))
+        assert ratio(worst, tok["bg"]) < 1.35, (name, "aurora too strong", worst)
+    assert re.search(r":root \{\s*color-scheme: light;", css)
+    assert css.count("color-scheme: dark;") == 2      # the system-dark block and the picked-dark block
+    html = _text("index.html")
+    assert '<meta name="theme-color" content="#ffffff"' in html and '<meta name="theme-color" content="#000000"' in html
+
+
+def test_panels_stand_out_from_the_page_in_both_themes():
+    # Cards, rows and the toast must not melt into a pure white or black page.
+    dark = _themes()["dark"]
+    glass, _ = _motion_params("dark")
+    panel = _mix(dark["surface"], dark["bg"], glass)
+    assert ratio(panel, dark["bg"]) >= 1.12, ("dark panel too close to black", panel)
+    assert ratio(dark["surface-2"], dark["surface"]) >= 1.08
+    for name, tok in _themes().items():
+        glass, _ = _motion_params(name)
+        panel = _mix(tok["surface"], tok["bg"], glass)
+        assert ratio(tok["line"], panel) >= 1.2, (name, "panel border invisible")
+        assert ratio(tok["line-strong"], tok["surface-2"]) >= 3, (name, "toast border")
+
+
 def _lum(hex_):
     rgb = [int(hex_[i:i + 2], 16) / 255 for i in (1, 3, 5)]
     lin = [c / 12.92 if c <= 0.03928 else ((c + 0.055) / 1.055) ** 2.4 for c in rgb]
@@ -247,13 +283,14 @@ def ratio(a, b):
 
 
 TEXT_PAIRS = [  # (foreground, background) as used on opaque surfaces in app.css
-    ("accent-soft", "text"),        # Undo button on the toast
+    # the toast is an opaque surface-2 card with a line-strong border: text and
+    # its Undo button (accent-text) on surface-2 are checked below
     ("text", "bg"), ("text", "surface"), ("text", "surface-2"), ("text", "accent-soft"), ("text", "warn-bg"),
     ("muted", "bg"), ("muted", "surface"), ("muted", "surface-2"), ("muted", "accent-soft"),
     ("accent-text", "bg"), ("accent-text", "surface"), ("accent-text", "surface-2"), ("accent-text", "accent-soft"),
     ("accent-ink", "accent"),
     ("warn", "warn-bg"), ("warn", "surface"), ("bad", "bad-bg"), ("bad", "surface"), ("bad", "surface-2"),
-    ("good", "good-bg"), ("good", "surface-2"), ("bg", "text"), ("bad-ink", "bad"),
+    ("good", "good-bg"), ("good", "surface-2"), ("bad-ink", "bad"),
     # the savings card: a deep gradient from spot-1 to spot-2, money chips, and a light Save button
     ("spot-text", "spot-1"), ("spot-text", "spot-2"), ("spot-text", "spot-chip"), ("spot-muted", "spot-1"), ("spot-muted", "spot-2"),
     ("spot-accent", "spot-1"), ("spot-accent", "spot-2"), ("spot-1", "spot-text"),
@@ -299,9 +336,9 @@ def test_text_on_glass_over_the_moving_background_meets_wcag_aa(theme):
         panel = _mix(tok["surface"], under, glass)
         surfaces = {"glass": panel, "header": _mix(tok["surface"], under, .70),
                     "selected row": _mix(tok["accent-soft"], panel, .85), "armed row": _mix(tok["warn-bg"], panel, .55),
-                    "toast": tok["text"]}
+                    "toast": tok["surface-2"]}
         for where, bg in surfaces.items():
-            for fg in (("bg",) if where == "toast" else ("text", "muted", "accent-text")):
+            for fg in ("text", "muted", "accent-text"):
                 r = ratio(tok[fg], bg)
                 if r < 4.5:
                     low.append((where, fg, under, round(r, 2)))

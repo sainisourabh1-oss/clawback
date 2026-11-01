@@ -630,7 +630,38 @@ with sync_playwright() as p:
     page.evaluate("window.scrollTo(0, 0)")
     settle(page)
     page.screenshot(path=str(outdir / "08-dark.png"))
-    step("dark mode rendered")
+    # Two themes, pure black and pure white (2026-11-01): the page itself and
+    # the browser chrome colour follow; the header button picks one over the
+    # system's, then goes back to automatic.
+    bg = "getComputedStyle(document.documentElement).backgroundColor"
+    meta = "[...document.querySelectorAll('meta[name=theme-color]')].map(m => m.content)"
+    assert page.evaluate(bg) == "rgb(0, 0, 0)", page.evaluate(bg)
+    assert set(page.evaluate(meta)) == {"#000000"}, page.evaluate(meta)
+    # the aurora stays faint: the brightest canvas pixel is still nearly black
+    peak = page.evaluate("""() => { const c = document.getElementById('aurora-c'), d = c.getContext('2d').getImageData(0, 0, c.width, c.height).data;
+        let m = 0; for (let i = 0; i < d.length; i += 4) m = Math.max(m, d[i], d[i + 1], d[i + 2]); return m; }""")
+    assert peak <= 60, f"aurora too bright on black: channel peak {peak}"
+    theme = page.locator("#theme")
+    try:
+        page.evaluate("localStorage.removeItem('clawback-theme')")
+        expect(theme).to_have_attribute("aria-label", "Theme: automatic")
+        theme.click()
+        expect(theme).to_have_attribute("aria-label", "Theme: light")
+        assert page.evaluate(bg) == "rgb(255, 255, 255)", page.evaluate(bg)    # white even though the system is dark
+        assert set(page.evaluate(meta)) == {"#ffffff"}, page.evaluate(meta)
+        theme.click()
+        expect(theme).to_have_attribute("aria-label", "Theme: dark")
+        assert page.evaluate(bg) == "rgb(0, 0, 0)"
+        page.emulate_media(color_scheme="light")
+        assert page.evaluate(bg) == "rgb(0, 0, 0)", "a picked dark theme wins over a light system"
+        theme.click()
+        expect(theme).to_have_attribute("aria-label", "Theme: automatic")
+        assert page.evaluate(bg) == "rgb(255, 255, 255)"
+    finally:
+        page.evaluate("localStorage.removeItem('clawback-theme')")
+        page.emulate_media(color_scheme="dark")
+    step(f"dark mode rendered: page rgb(0, 0, 0), theme-color #000000, aurora peak channel {peak}/255; "
+         "header button: automatic -> light (rgb(255, 255, 255) on a dark system) -> dark (wins over a light system) -> automatic")
 
     # The moving background: a small canvas repainted about 8 times a second
     # (not 60), stretched over the window; it stops while the tab is hidden.

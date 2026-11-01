@@ -156,6 +156,9 @@ function auroraTokens() {
   const cs = getComputedStyle(document.documentElement);
   AURORA.tokens = { bg: cs.getPropertyValue("--bg").trim(), o: parseFloat(cs.getPropertyValue("--blob-o")) || .5,
                     blobs: [1, 2, 3, 4].map(i => cs.getPropertyValue("--blob-" + i).trim()) };
+  // the browser's own chrome (mobile address bar) matches the page: white or black
+  // (both media-specific tags, so a picked theme wins over the system's)
+  document.querySelectorAll('meta[name="theme-color"]').forEach(m => { m.content = AURORA.tokens.bg; });
 }
 function auroraPaint() {
   const c = document.getElementById("aurora-c");

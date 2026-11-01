@@ -8,7 +8,7 @@ into the states a user can also end up in and checks what they see:
   * very long sender names and paid subscriptions in many currencies
   * a read-only Google sign-in (asks once to sign in again, in place, no pop-up) and an .mbox import (no Delete)
   * the scan options as an inline panel (never a dialog)
-  * each at 1280 px light, 1280 px dark and 390 px phone width
+  * each at 1280 px light (white), 1280 px dark (black) and 390 px phone width
 
 For every state: no console errors, no request to any other server, no
 horizontal scroll, and the expected words on screen. Screenshots go to the
@@ -131,6 +131,10 @@ with sync_playwright() as p:
         expect(pg.locator(".glance")).to_have_count(0)      # no row of zeros
         expect(pg.locator("#banner")).to_be_hidden()        # no savings claim, nothing to read past
         no_hscroll(pg, "empty " + name)
+        # the two themes are pure white and pure black, page and browser chrome alike
+        want = "rgb(0, 0, 0)" if kw.get("scheme") == "dark" else "rgb(255, 255, 255)"
+        got = pg.evaluate("getComputedStyle(document.documentElement).backgroundColor")
+        assert got == want, (name, got)
         settle(pg)
         pg.screenshot(path=str(outdir / f"state-empty-{name}.png"), full_page=True)
         pg.get_by_role("tab", name="Paid").click()
@@ -141,7 +145,7 @@ with sync_playwright() as p:
             expect(pg.get_by_text(words)).to_be_visible()
         c.close()
     step(f"empty mailbox ({snap['result']['messages']} emails): friendly empty states on 4 tabs (two reached through More), "
-         "no glance line of zeros, no savings banner; desktop/dark/390 px")
+         "no glance line of zeros, no savings banner; page rgb(255, 255, 255) light, rgb(0, 0, 0) dark; desktop/dark/390 px")
 
     # The demo gives the next states real data behind them.
     app.connect({"kind": "demo"})

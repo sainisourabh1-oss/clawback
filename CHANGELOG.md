@@ -159,7 +159,8 @@ This replaces the typed confirmation phrase described in the entries below.
 - CI tests Python 3.10 to 3.13 on Linux, Windows and macOS, byte-compiles the package on each version,
   builds the sdist and wheel with `twine check`, installs the wheel in a fresh venv and audits dependencies.
   A tag workflow (`release.yml`) checks the tag matches `clawback.__version__`, builds, smoke-tests the
-  wheel and creates the GitHub release; publishing to PyPI stays off.
+  wheel, creates the GitHub release and publishes the same files to PyPI with trusted publishing
+  (no API token); a manual run publishes an existing release's files without rebuilding them.
 - README rewritten: themed banner and feature strip, a quick start, connector
   test labels, Gmail scope classes, a comparison, FAQ and roadmap. `docs/maintainers/REPO_SETUP.md`
   lists the repository settings. The old `docs/REVIEW.md` and `docs/ROADMAP.md` are gone (the roadmap is

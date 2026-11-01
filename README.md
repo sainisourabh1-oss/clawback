@@ -8,9 +8,7 @@
 
 <p align="center">
   <a href="https://github.com/sainisourabh1-oss/clawback/actions/workflows/ci.yml"><img alt="CI" src="https://github.com/sainisourabh1-oss/clawback/actions/workflows/ci.yml/badge.svg"></a>
-  <!-- PyPI badge: add once the package is published.
   <a href="https://pypi.org/project/clawback/"><img alt="PyPI" src="https://img.shields.io/pypi/v/clawback?color=0f766e"></a>
-  -->
   <img alt="Python 3.10 to 3.13" src="https://img.shields.io/badge/python-3.10%20%7C%203.11%20%7C%203.12%20%7C%203.13-0f766e">
   <img alt="Runs locally" src="https://img.shields.io/badge/runs-100%25%20locally-0f766e">
   <img alt="No telemetry" src="https://img.shields.io/badge/telemetry-none-0f766e">
@@ -60,17 +58,18 @@ honest tally of what you have saved, in every currency you pay in.
 
 ## Quick start
 
-You need Python 3.10 or newer. Clawback is not on PyPI yet, so install it from GitHub:
+You need Python 3.10 or newer. Install it from [PyPI](https://pypi.org/project/clawback/):
 
 ```bash
 python -m venv clawback-env
 . clawback-env/bin/activate        # Windows: clawback-env\Scripts\activate
-pip install "clawback[gmail] @ git+https://github.com/sainisourabh1-oss/clawback"
+pip install "clawback[gmail]"
 clawback
 ```
 
 The `[gmail]` extra adds Google's client libraries for *Connect Gmail*; leave it out
-(`pip install git+https://github.com/sainisourabh1-oss/clawback`) if you only import Takeout or use IMAP.
+(`pip install clawback`) if you only import Takeout or use IMAP. To run the latest code from GitHub
+instead: `pip install "clawback[gmail] @ git+https://github.com/sainisourabh1-oss/clawback"`.
 
 `clawback` opens the app in your browser (`clawback ui --no-browser` prints the address instead). Then
 pick one:
@@ -453,7 +452,6 @@ whether a law applies depends on facts Clawback cannot check.
 
 Ideas being considered, in no fixed order. They describe direction, not promises or dates.
 
-- Publish to PyPI, so installing is `pip install clawback`.
 - Run the connectors labelled *Tested with fakes* and *Experimental* against real accounts, and update
   their labels only when they pass.
 - More regional modules, and sourced, checked revoke steps for the banks and UPI apps that currently show

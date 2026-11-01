@@ -116,13 +116,12 @@ gh api -X POST "repos/$REPO/rulesets" --input docs/maintainers/ruleset-main.json
    notes under that version, merge to `main`.
 2. Tag and push: `git tag v2.0.0 && git push origin v2.0.0`. `release.yml` checks that the tag matches
    `clawback.__version__`, builds, runs `twine check` and the wheel smoke test, and attaches the sdist
-   and wheel to a GitHub Release with generated notes.
-3. PyPI (optional, later): on pypi.org add a **trusted publisher** (a pending publisher if the project does
-   not exist yet) with owner `sainisourabh1-oss`, repository `clawback`, workflow `release.yml`,
-   environment `pypi`; create the environment with
-   `gh api -X PUT "repos/$REPO/environments/pypi"`; then uncomment the `pypi-publish` job in
-   `.github/workflows/release.yml`. After the first upload, add the PyPI badge (commented out at the top
-   of README.md) and change the README quick start to `pip install clawback`.
+   and wheel to a GitHub Release with generated notes, then publishes those same files to PyPI.
+3. PyPI (set up 2026-11-01): pypi.org project `clawback` trusts owner `sainisourabh1-oss`, repository
+   `clawback`, workflow `release.yml`, environment `pypi` (no API token anywhere). The `pypi` environment
+   only accepts the `main` branch and `v*` tags. Releases and `v*` tags are immutable, so to publish an
+   already-released version run the workflow by hand:
+   `gh workflow run release.yml -R "$REPO" --ref main -f tag=v2.0.0` (it uploads the release's own files).
 
 ## 9. Check
 

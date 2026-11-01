@@ -143,8 +143,7 @@ def save_link(domain: str, url: str, path: Path | None = None) -> None:
     if not isinstance(db, dict):
         raise ValueError("Saved cancel-link database must contain a JSON object")
     db[domain] = url.strip()
-    p.write_text(json.dumps(db, indent=2, sort_keys=True), encoding="utf-8")
-    config._private(p)
+    config.write_private(p, json.dumps(db, indent=2, sort_keys=True))
 
 
 def email_settings_for(domain: str) -> dict | None:

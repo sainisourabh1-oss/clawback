@@ -256,9 +256,7 @@ class GmailSource(Source):
                 raise AuthError("Google sign-in did not complete. Try again; if your Google Cloud app is in "
                                 "'Testing', add your address as a test user. "
                                 f"Technical details: {type(exc).__name__}: {exc}") from exc
-            self.token_file.parent.mkdir(parents=True, exist_ok=True)
-            self.token_file.write_text(creds.to_json(), encoding="utf-8")
-            config._private(self.token_file)
+            config.write_private(self.token_file, creds.to_json())
         self._granted = set(creds.scopes or scopes)
         return creds
 

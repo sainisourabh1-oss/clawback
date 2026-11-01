@@ -138,3 +138,40 @@ def test_private_folder_stays_usable(tmp_path, monkeypatch):
         assert stat.S_IMODE((home / "subscriptions.sqlite3").stat().st_mode) == 0o600
     config._private(home)
     assert home.is_dir()
+
+
+def test_secret_files_are_owner_only_from_the_first_byte(tmp_path, monkeypatch):
+    """Tokens, the Microsoft client file, settings and saved links are created
+    0600 (not written world-readable and chmod-ed afterwards), in a 0700
+    folder, and replace the old file whole."""
+    import os
+    import stat
+    from clawback import config
+    seen = []
+    real_open = os.open
+
+    def spy(path, flags, mode=0o777, *a, **kw):
+        seen.append((str(path), flags, mode))
+        return real_open(path, flags, mode, *a, **kw)
+    monkeypatch.setattr(os, "open", spy)
+    target = tmp_path / "tokens" / "someone@example.com.json"
+    config.write_private(target, '{"refresh_token": "x"}')
+    config.write_private(target, '{"refresh_token": "y"}')
+    assert target.read_text(encoding="utf-8") == '{"refresh_token": "y"}'
+    assert [p for p in target.parent.iterdir()] == [target]          # no temp file left behind
+    assert len(seen) == 2 and all(mode == 0o600 and flags & os.O_CREAT and flags & os.O_EXCL for _, flags, mode in seen)
+    if os.name == "posix":
+        assert stat.S_IMODE(target.stat().st_mode) == 0o600
+        assert stat.S_IMODE(target.parent.stat().st_mode) == 0o700
+
+
+def test_every_secret_write_goes_through_write_private():
+    """No module writes a token, client or settings file with plain write_text."""
+    from pathlib import Path
+    import clawback
+    root = Path(clawback.__file__).parent
+    for name in ("config.py", "ms_oauth.py", "links.py", "saved.py", "sources/gmail.py"):
+        src = (root / name).read_text(encoding="utf-8")
+        # the one exception is the v1-import note, which holds no secret
+        bad = [line for line in src.splitlines() if ".write_text(" in line and "IMPORTED_FROM" not in line]
+        assert bad == [], (name, bad)

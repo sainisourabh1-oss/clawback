@@ -181,6 +181,7 @@ def adopt_gmail_signin(src) -> str:
     target = config.token_path(label)
     if pending.exists() and pending != target:
         target.parent.mkdir(parents=True, exist_ok=True)
+        config._private(target.parent)
         os.replace(pending, target)
         config._private(target)
     src.account, src.token_file = label, target

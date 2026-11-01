@@ -106,9 +106,7 @@ def save_settings(changes: dict) -> dict:
         if key == "show_converted_total":
             value = bool(value)
         data[key] = value
-    p = settings_path()
-    p.write_text(json.dumps(data, indent=2, sort_keys=True), encoding="utf-8")
-    _private(p)
+    write_private(settings_path(), json.dumps(data, indent=2, sort_keys=True))
     return data
 
 
@@ -126,6 +124,29 @@ def validate_rates(value: dict) -> None:
     for code, rate in rates.items():
         if code not in SUPPORTED or not isinstance(rate, (int, float)) or rate <= 0:
             raise ValueError(f"Invalid rate for {code!r}")
+
+
+def write_private(p: Path, text: str) -> None:
+    """Write a file that holds secrets or personal data. It is created
+    owner-only (0600) from the first byte, in a folder that is owner-only
+    (0700), and swapped into place, so no other local user can read it even
+    for a moment and a crash never leaves half a file."""
+    import secrets
+    p.parent.mkdir(parents=True, exist_ok=True)
+    _private(p.parent)
+    tmp = p.with_name(f"{p.name}.{secrets.token_hex(4)}.tmp")
+    fd = os.open(tmp, os.O_WRONLY | os.O_CREAT | os.O_EXCL | getattr(os, "O_BINARY", 0), 0o600)
+    try:
+        with os.fdopen(fd, "w", encoding="utf-8", newline="") as f:
+            f.write(text)
+        os.replace(tmp, p)
+    except BaseException:
+        try:
+            tmp.unlink()
+        except OSError:
+            pass
+        raise
+    _private(p)
 
 
 def _private(p: Path) -> None:

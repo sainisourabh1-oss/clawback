@@ -82,8 +82,7 @@ def load_client() -> dict | None:
 
 def save_client(client_id: str, tenant: str = "common") -> None:
     p = client_path()
-    p.write_text(json.dumps({"client_id": client_id, "tenant": tenant}, indent=2), encoding="utf-8")
-    config._private(p)
+    config.write_private(p, json.dumps({"client_id": client_id, "tenant": tenant}, indent=2))
 
 
 def valid_client_id(value: str) -> bool:
@@ -219,14 +218,7 @@ class MicrosoftSignIn:
 
     def _save(self, d: dict) -> None:
         self._data = d
-        p = self.token_file
-        p.parent.mkdir(parents=True, exist_ok=True)
-        config._private(p.parent)
-        tmp = p.with_suffix(".tmp")
-        tmp.write_text(json.dumps(d), encoding="utf-8")
-        config._private(tmp)
-        tmp.replace(p)
-        config._private(p)
+        config.write_private(self.token_file, json.dumps(d))
 
     def forget(self) -> None:
         """Delete the stored tokens (disconnect on this computer)."""

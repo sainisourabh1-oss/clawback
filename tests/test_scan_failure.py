@@ -88,8 +88,9 @@ def test_a_killed_scan_is_reported_by_the_next_run(tmp_path):
     _age_heartbeats()
     out = CliRunner().invoke(cli.app, ["scan", "--demo"])
     assert out.exit_code == 0, out.output
-    assert "The previous scan of acct" in out.output and "did not finish" in out.output
-    assert "Clawback was closed or stopped" in " ".join(out.output.split())
+    flat = " ".join(out.output.split())          # line wrapping depends on the terminal width
+    assert "The previous scan of acct" in flat and "did not finish" in flat
+    assert "Clawback was closed or stopped" in flat
     killed = [r for r in _scans() if r["account"] == "acct"]
     assert killed[0]["error"] == tracker.ABANDONED_TEXT and killed[0]["finished_at"]
     assert tracker.last_failure("acct")["error"] == tracker.ABANDONED_TEXT

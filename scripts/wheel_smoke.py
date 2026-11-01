@@ -79,18 +79,20 @@ def main() -> int:
     try:
         import threading
         found: list[str] = []
+        lines: list[str] = []
 
         def reader():
             for line in proc.stdout:
+                lines.append(line)
                 m = re.search(r"(http://127\.0\.0\.1:\d+/)", line)
                 if m and not found:
                     found.append(m.group(1))
         threading.Thread(target=reader, daemon=True).start()
-        deadline = time.time() + 30
+        deadline = time.time() + 60
         while time.time() < deadline and not found:
             time.sleep(0.2)
         url = found[0] if found else None
-        assert url, "server did not start"
+        assert url, "server did not start; its output:" + chr(10) + "".join(lines)
         page = urllib.request.urlopen(url, timeout=10).read().decode("utf-8")
         assert "<title>Clawback</title>" in page and "csrf-token" in page
         for asset in ("static/app.js", "static/icons.js", "static/app.css", "static/i18n/en.json", "static/logo.svg",

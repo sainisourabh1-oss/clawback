@@ -873,6 +873,13 @@ def _guides():
 class _Server(ThreadingHTTPServer):
     daemon_threads = True
 
+    def server_bind(self):
+        # HTTPServer.server_bind calls socket.getfqdn(), a reverse DNS lookup
+        # that can stall startup for 30+ s on macOS. The name is never used.
+        import socketserver
+        socketserver.TCPServer.server_bind(self)
+        self.server_name, self.server_port = "127.0.0.1", self.server_address[1]
+
     def handle_error(self, request, client_address):
         import sys
         if isinstance(sys.exc_info()[1], (ConnectionAbortedError, ConnectionResetError, BrokenPipeError)):

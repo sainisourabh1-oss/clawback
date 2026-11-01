@@ -2,6 +2,15 @@
 and DNS that resolves the demo's ``*.example`` hosts to it."""
 from __future__ import annotations
 
+import os
+
+# Typer forces colour + terminal mode when GITHUB_ACTIONS/FORCE_COLOR is set,
+# which puts ANSI codes into CliRunner output. Read at import time, so set it
+# before anything imports typer.
+os.environ["_TYPER_FORCE_DISABLE_TERMINAL"] = "1"
+for _var in ("FORCE_COLOR", "PY_COLORS"):
+    os.environ.pop(_var, None)
+
 import socket
 import ssl
 import threading

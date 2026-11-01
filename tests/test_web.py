@@ -192,3 +192,19 @@ def test_scan_progress_endpoints_are_protected_and_report_progress(web):
     done = web.scan()
     assert done["status"] == "done" and done["progress"]["done"] == done["progress"]["total"]
     assert done["progress"]["senders"] > 0 and done["result"]["partial"] is False
+
+
+def test_negative_content_length_is_refused_not_waited_on(web):
+    """Content-Length: -1 used to reach rfile.read(-1), which waits for the
+    client to close the connection: one request could hold a server thread
+    for as long as the client liked."""
+    import socket
+    for path, ctype in (("/api/settings", "application/json"), ("/api/upload?name=x.mbox", "application/octet-stream")):
+        s = socket.create_connection(("127.0.0.1", web.port), timeout=5)
+        try:
+            s.sendall((f"POST {path} HTTP/1.1\r\nHost: 127.0.0.1:{web.port}\r\nX-Clawback-CSRF: {web.csrf}\r\n"
+                       f"Content-Type: {ctype}\r\nContent-Length: -1\r\n\r\n{{}}").encode())
+            head = s.recv(65536).decode("latin-1")     # the connection stays open: an answer must come anyway
+        finally:
+            s.close()
+        assert head.startswith("HTTP/1.1 400"), (path, head[:80])

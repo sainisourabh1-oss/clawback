@@ -568,8 +568,16 @@ def make_handler(app: App):
         def _error(self, status, message):
             self._json(status, {"error": message})
 
+        def _length(self) -> int:
+            """Content-Length as a whole number >= 0. A negative one would make
+            rfile.read(-1) wait for the connection to close."""
+            raw = (self.headers.get("Content-Length") or "0").strip()
+            if not raw.isdigit():
+                raise ApiError(400, "Invalid Content-Length")
+            return int(raw)
+
         def _body(self) -> dict:
-            n = int(self.headers.get("Content-Length") or 0)
+            n = self._length()
             if n > MAX_JSON:
                 raise ApiError(413, "Request too large")
             raw = self.rfile.read(n) if n else b"{}"
@@ -733,7 +741,7 @@ def make_handler(app: App):
             name = re.sub(r"[^\w.-]", "_", (parse_qs(url.query).get("name") or ["upload.mbox"])[0])[:120]
             if not name.lower().endswith((".mbox", ".zip", ".tgz", ".gz", ".tar", ".eml")):
                 raise ApiError(400, "Choose a .zip, .tgz, .mbox or .eml file")
-            remaining = int(self.headers.get("Content-Length") or 0)
+            remaining = self._length()
             dest_dir = config.home() / "imports"
             dest_dir.mkdir(exist_ok=True)
             dest = dest_dir / f"{int(time.time())}-{name}"

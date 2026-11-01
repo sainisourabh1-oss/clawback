@@ -284,3 +284,29 @@ def test_phishing_signals_named_in_the_readme_are_raised():
     assert "name mentions Paypal but mail is from secure-login.example" in says(from_name="PayPal Security")
     assert "replies go to a different domain" in says(reply_to="collect@elsewhere.example")
     assert says(from_name="Secure Login", domain="secure-login.example") == ""   # an ordinary sender: nothing
+
+
+def test_one_click_connects_to_the_checked_address_not_a_second_lookup(unsub_server, monkeypatch):
+    """DNS rebinding: the name is resolved once, checked, and the connection
+    goes to that address. A second lookup (which a rebinding DNS server would
+    answer with a LAN address) must never happen."""
+    import socket
+    calls = []
+    real = socket.getaddrinfo
+
+    def second_lookup(host, port, *a, **kw):
+        if host == "plain.example":
+            calls.append(host)
+            raise socket.gaierror("a second lookup of the host name happened")
+        return real(host, port, *a, **kw)
+    monkeypatch.setattr(socket, "getaddrinfo", second_lookup)
+    checked = lambda host, port, **kw: real("127.0.0.1", port, **kw)   # noqa: E731 - the one checked answer
+    r = oneclick.post(f"https://plain.example:{unsub_server.port}/u", context=unsub_server.client_ctx,
+                      allow_private=True, resolver=checked)
+    assert r.ok, r.detail
+    assert calls == []
+    assert unsub_server.requests[-1]["host"].startswith("plain.example")   # Host header and SNI keep the name
+    # the certificate is still checked against the host name, not the address
+    r = oneclick.post(f"https://plain.example:{unsub_server.port}/u", context=__import__("ssl").create_default_context(),
+                      allow_private=True, resolver=checked)
+    assert not r.ok and "network error" in r.detail

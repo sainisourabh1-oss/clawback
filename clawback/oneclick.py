@@ -6,6 +6,10 @@
   an email cannot make this tool poke your router or a local service.
 * No cookies, no Authorization header, no Referer: the request carries nothing
   that identifies you beyond the URL the sender chose.
+* The connection goes to the very address that was checked (the name is not
+  looked up a second time), so a DNS answer that changes between the check
+  and the connection (DNS rebinding) cannot point the request at your LAN.
+  TLS still verifies the certificate against the host name.
 * Redirects are followed manually, at most 3, and only to HTTPS URLs that pass
   the same checks. (RFC 8058 §3.2 says the POST "MUST NOT" need redirects, so
   most senders will not use them.)
@@ -14,6 +18,8 @@
 """
 from __future__ import annotations
 
+import functools
+import http.client
 import ipaddress
 import socket
 import ssl
@@ -50,6 +56,11 @@ class _NoRedirect(urllib.request.HTTPRedirectHandler):
 
 def check_url(url: str, allow_private: bool = False, resolver=None) -> str:
     """Return the host if ``url`` is safe to contact, else raise UnsafeURL."""
+    return _checked(url, allow_private, resolver)[0]
+
+
+def _checked(url: str, allow_private: bool = False, resolver=None) -> tuple[str, str]:
+    """(host, the checked IP address to connect to), else raise UnsafeURL."""
     try:
         p = urlparse(url)
     except ValueError as exc:
@@ -64,30 +75,55 @@ def check_url(url: str, allow_private: bool = False, resolver=None) -> str:
         raise UnsafeURL(why)
     try:
         infos = (resolver or socket.getaddrinfo)(host, p.port or 443, proto=socket.IPPROTO_TCP)
-    except (socket.gaierror, UnicodeError) as exc:
+    except (socket.gaierror, UnicodeError, ValueError) as exc:
         raise UnsafeURL(f"cannot resolve {host}: {exc}") from exc
+    if not infos:
+        raise UnsafeURL(f"cannot resolve {host}")
     for info in infos:
         addr = ipaddress.ip_address(info[4][0].split("%")[0])
         if not addr.is_global and not allow_private:
             raise UnsafeURL(f"{host} points to a private/local address ({addr})")
-    return host
+    return host, infos[0][4][0]
+
+
+class _PinnedHTTPSConnection(http.client.HTTPSConnection):
+    """HTTPS to ``pinned_ip`` (already checked), with SNI and certificate
+    verification for the URL's host name."""
+
+    def __init__(self, *args, pinned_ip: str, **kwargs):
+        super().__init__(*args, **kwargs)
+        self._pinned_ip = pinned_ip
+
+    def connect(self):
+        sock = socket.create_connection((self._pinned_ip, self.port), self.timeout, self.source_address)
+        self.sock = self._context.wrap_socket(sock, server_hostname=self.host)
+
+
+class _PinnedHTTPSHandler(urllib.request.HTTPSHandler):
+    def __init__(self, context: ssl.SSLContext, pinned_ip: str):
+        super().__init__(context=context)
+        self._pinned_ip = pinned_ip
+
+    def https_open(self, req):
+        return self.do_open(functools.partial(_PinnedHTTPSConnection, pinned_ip=self._pinned_ip), req,
+                            context=self._context)
 
 
 def post(url: str, context: ssl.SSLContext | None = None, allow_private: bool = False,
          timeout: float = TIMEOUT, resolver=None) -> PostResult:
     """Send the one-click POST. Never raises for network/HTTP problems."""
     context = context or ssl.create_default_context()
-    opener = urllib.request.OpenerDirector()
-    for handler in (urllib.request.HTTPSHandler(context=context), _NoRedirect(),
-                    urllib.request.HTTPDefaultErrorHandler(), urllib.request.HTTPErrorProcessor()):
-        opener.add_handler(handler)
     method, data = "POST", BODY
     current = url
     for hop in range(MAX_REDIRECTS + 1):
         try:
-            check_url(current, allow_private, resolver)
+            _, ip = _checked(current, allow_private, resolver)
         except UnsafeURL as exc:
             return PostResult(False, None, f"refused: {exc}" + (" (after redirect)" if hop else ""), current)
+        opener = urllib.request.OpenerDirector()
+        for handler in (_PinnedHTTPSHandler(context, ip), _NoRedirect(),
+                        urllib.request.HTTPDefaultErrorHandler(), urllib.request.HTTPErrorProcessor()):
+            opener.add_handler(handler)
         req = urllib.request.Request(current, data=data, method=method, headers={
             "User-Agent": USER_AGENT,
             **({"Content-Type": "application/x-www-form-urlencoded"} if data else {}),

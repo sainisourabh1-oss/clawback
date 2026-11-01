@@ -28,7 +28,7 @@ Pick one (needs Python 3.10 or newer):
 
 | Command | What you get |
 |---|---|
-| `pip install "clawback[gmail]"` | **Everything, including Connect Gmail.** Adds Google's sign-in libraries (about 15 MB). Use this if you have a Gmail account. |
+| `pip install "clawback[gmail]"` | **Everything, including Connect Gmail.** Adds Google's API libraries (about 140 MB on disk; the small install is about 30 MB). Use this if you have a Gmail account. |
 | `pip install clawback` | The app, the demo, Connect Outlook (Microsoft sign-in, experimental), Yahoo and other mail with an app password, and Google Takeout or `.mbox` import. **No Connect Gmail.** |
 
 Then start it:

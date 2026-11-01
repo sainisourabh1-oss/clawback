@@ -108,17 +108,47 @@ def test_split_is_streaming(tmp_path):
     class Lines(io.BytesIO):
         reads = 0
 
-        def __iter__(self):
-            while True:
-                line = self.readline()
-                if not line:
-                    return
-                Lines.reads += 1
-                yield line
+        def readline(self, *a):
+            Lines.reads += 1
+            return super().readline(*a)
     data = write_mbox(tmp_path / "s.mbox", [raw(subject=str(i)) for i in range(3)]).read_bytes()
     gen = split_mbox(Lines(data))
     next(gen)
     assert Lines.reads < data.count(b"\n")  # first message yielded before the file was fully read
+
+
+def test_a_line_without_end_is_read_in_bounded_pieces():
+    """A damaged export (or a zip bomb) with no newline for gigabytes must not
+    be held in memory as one line: no read asks for more than MAX_LINE_BYTES."""
+    from clawback.extract import MAX_MESSAGE_BYTES
+    from clawback.sources.mbox import MAX_LINE_BYTES
+
+    class Endless(io.RawIOBase):
+        """Header, then 64 MB of 'A' with no newline, then a second message."""
+        def __init__(self):
+            self.parts = [b"From a@x Mon Jan  1 00:00:00 2024\nSubject: one\n\n", b"A" * (64 << 20),
+                          b"\n\nFrom b@x Mon Jan  1 00:00:00 2024\nSubject: two\n\nbody\n"]
+            self.biggest = 0
+
+        def readable(self):
+            return True
+
+        def readline(self, size=-1):
+            self.biggest = max(self.biggest, size if size >= 0 else 1 << 62)
+            if not self.parts:
+                return b""
+            head = self.parts[0]
+            cut = head.find(b"\n") + 1 or len(head)
+            cut = min(cut, size) if size >= 0 else cut
+            line, self.parts[0] = head[:cut], head[cut:]
+            if not self.parts[0]:
+                self.parts.pop(0)
+            return line
+    src = Endless()
+    msgs = list(split_mbox(src))
+    assert src.biggest <= MAX_LINE_BYTES
+    assert len(msgs) == 2 and len(msgs[0][1]) <= MAX_MESSAGE_BYTES + MAX_LINE_BYTES
+    assert b"Subject: two" in msgs[1][1]
 
 
 def test_large_export_is_fast_and_counts_correctly(tmp_path):

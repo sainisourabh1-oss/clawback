@@ -23,6 +23,7 @@ from pathlib import Path
 from ..extract import MAX_MESSAGE_BYTES, MessageInfo, from_bytes
 from .base import ScanCancelled, Source, SourceError
 
+MAX_LINE_BYTES = 1 << 20
 _FROM_LINE = re.compile(rb"^From \S")
 _ESCAPED_FROM = re.compile(rb"^>+From ")
 _LABEL_MAP = {"inbox": "INBOX", "spam": "SPAM", "trash": "TRASH", "sent": "SENT", "unread": "UNREAD",
@@ -45,7 +46,9 @@ def split_mbox(stream: io.BufferedIOBase) -> Iterator[tuple[int, bytes]]:
     offset = start = 0
     prev_blank = True
     in_msg = False
-    for line in stream:
+    # readline with a limit: an export with no newline for gigabytes (a
+    # damaged file or a zip bomb) is read in pieces, never as one line.
+    for line in iter(lambda: stream.readline(MAX_LINE_BYTES), b""):
         is_sep = prev_blank and _FROM_LINE.match(line) is not None
         if is_sep:
             if in_msg:

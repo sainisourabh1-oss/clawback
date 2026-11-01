@@ -22,6 +22,16 @@ It finds the newsletters, marketing and spam-like senders filling your inbox and
 hiding in your receipts, unsubscribes or blocks them **only after you confirm twice**, and keeps an
 honest tally of what you have saved, in every currency you pay in.
 
+### Install
+
+```bash
+pip install "clawback[gmail]"
+clawback
+```
+
+Needs Python 3.10 or newer. `clawback` opens the app in your browser; try the demo mailbox first.
+More options in the [Quick start](#quick-start).
+
 <p align="center"><img src="docs/screenshots/hero.png" alt="Clawback's local web app: savings in three currencies, a one-line summary, and the newsletter list sorted by most emails, each sender with Unsubscribe, Delete all and Keep (demo data)" width="900"></p>
 
 <p align="center">

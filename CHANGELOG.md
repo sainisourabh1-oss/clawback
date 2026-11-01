@@ -6,6 +6,18 @@ Clawback 2.0 (formerly "unsubscribe"): a local web app and CLI for bulk unsubscr
 two-click double confirmation, a paid-subscription finder with savings per currency, and proof that
 unsubscribes worked. The data folder moves to `~/.clawback` (v1 `~/.unsubscribe` data is copied once).
 
+### Security and platform fixes before release
+
+- One-click unsubscribe connects to the exact address that passed the safety check, so a second DNS
+  answer cannot point it at your own network (DNS rebinding).
+- An unsubscribe `mailto:` must name exactly one address; links that would mail extra people are refused.
+- Token, settings and saved-link files are created owner-only (0600, in a 0700 folder) from the first byte.
+- The data folder was set to 0600 on Linux/macOS, which locked the app out of its own database; folders
+  are now 0700.
+- The local server refuses a negative or malformed `Content-Length` instead of waiting on it, and skips a
+  slow reverse-DNS lookup at start-up (up to 30 s on macOS).
+- Mailbox exports are read in bounded pieces, so a damaged file cannot exhaust memory.
+
 ### No pop-ups: two clicks in place, a calmer screen
 
 This replaces the confirm sheet described in "Simpler cleanup after a scan" below.

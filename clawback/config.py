@@ -129,7 +129,9 @@ def validate_rates(value: dict) -> None:
 
 
 def _private(p: Path) -> None:
+    """Owner-only access: 0700 for a folder (it needs the execute bit to be
+    entered), 0600 for a file."""
     try:
-        p.chmod(0o600)
+        p.chmod(0o700 if p.is_dir() else 0o600)
     except OSError:
         pass

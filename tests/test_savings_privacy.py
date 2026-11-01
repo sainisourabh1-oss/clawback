@@ -121,3 +121,20 @@ def test_app_password_and_message_bodies_never_reach_the_disk(isolated_home):
         data = p.read_bytes()
         assert secret.encode() not in data, f"app password found in {p.name}"
         assert marker.encode() not in data, f"message body text found in {p.name}"
+
+
+def test_private_folder_stays_usable(tmp_path, monkeypatch):
+    """The data folder must be owner-only but still enterable (0700, not 0600),
+    or on Linux/macOS the database next to it cannot be opened."""
+    import os
+    import stat
+    from clawback import config, tracker
+    home = tmp_path / "fresh-home"
+    monkeypatch.setenv("CLAWBACK_HOME", str(home))
+    tracker.connect().close()
+    assert (home / "subscriptions.sqlite3").is_file()
+    if os.name == "posix":
+        assert stat.S_IMODE(home.stat().st_mode) == 0o700
+        assert stat.S_IMODE((home / "subscriptions.sqlite3").stat().st_mode) == 0o600
+    config._private(home)
+    assert home.is_dir()

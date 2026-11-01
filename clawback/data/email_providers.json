@@ -1,0 +1,918 @@
+{
+ "_about": "Email service providers that legitimately host unsubscribe links for other brands. A link on one of these domains is shown as 'handled by <name>', not as a mismatch. Every domain and pattern must be covered by a source: kind 'doc' (the provider's documentation names the domain), 'site' (the domain is the provider's own website) or 'dns' (public DNS ties the domain to the provider; 'says' records what was seen). Unsourced domains are left out on purpose: a domain that signed the email (DKIM/SPF pass) is still trusted by rule 3.",
+ "providers": [
+  {
+   "name": "SendGrid",
+   "domains": [
+    "sendgrid.net",
+    "sendgrid.com",
+    "emailinboundprocessing.com",
+    "emailinboundprocessing.eu"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "doc",
+     "url": "https://www.twilio.com/docs/sendgrid/ui/account-and-settings/how-to-set-up-link-branding",
+     "says": "This replaces sendgrid.net for Global Email send or eu.sendgrid.net ...",
+     "covers": [
+      "sendgrid.net"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "site",
+     "url": "https://sendgrid.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "sendgrid.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "dns",
+     "url": "https://www.twilio.com/docs/sendgrid/for-developers/parsing-email/setting-up-the-inbound-parse-webhook",
+     "says": "MX of unsubscribe.emailinboundprocessing.com, unsubscribe-07.emailinboundprocessing.com and unsubscribe-02.emailinboundprocessing.eu is mx.sendgrid.net, the host SendGrid's Inbound Parse doc says to use (\"Set the mail server address to mx.sendgrid.net\")",
+     "covers": [
+      "emailinboundprocessing.com",
+      "emailinboundprocessing.eu"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Mailchimp",
+   "domains": [
+    "mailchimp.com",
+    "list-manage.com",
+    "mcsv.net",
+    "mcdlv.net",
+    "mailchimpapp.net",
+    "rsgsv.net"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://mailchimp.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "mailchimp.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://mailchimp.com/help/all-the-merge-tags-cheat-sheet/",
+     "says": "*|LIST_HOST|* ... yourcompany.us1.list-manage.com",
+     "covers": [
+      "list-manage.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://mailchimp.com/help/my-campaign-from-name-shows-mcsvnet/",
+     "says": "names mcsv.net, mcdlv.net, mailchimpapp.net and rsgsv.net as Mailchimp sending domains",
+     "covers": [
+      "mcsv.net",
+      "mcdlv.net",
+      "mailchimpapp.net",
+      "rsgsv.net"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Amazon SES",
+   "domains": [
+    "amazonses.com",
+    "awstrack.me"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "doc",
+     "url": "https://docs.aws.amazon.com/ses/latest/dg/mail-from.html",
+     "says": "default MAIL FROM domain is a subdomain of amazonses.com",
+     "covers": [
+      "amazonses.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://docs.aws.amazon.com/ses/latest/dg/configure-custom-open-click-domains.html",
+     "says": "default open/click tracking domain awstrack.me",
+     "covers": [
+      "awstrack.me"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Mailgun",
+   "domains": [
+    "mailgun.com",
+    "mailgun.org"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.mailgun.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "mailgun.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://documentation.mailgun.com/docs/mailgun/user-manual/tracking-messages/tracking-messages",
+     "says": "tracking links use mailgun.org",
+     "covers": [
+      "mailgun.org"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Postmark",
+   "domains": [
+    "postmarkapp.com",
+    "pstmrk.it"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://postmarkapp.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "postmarkapp.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://postmarkapp.com/support/article/1059-what-is-pstmrk-it",
+     "says": "pstmrk.it is Postmark's link tracking domain",
+     "covers": [
+      "pstmrk.it"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "SparkPost",
+   "domains": [
+    "sparkpost.com",
+    "sparkpostmail.com",
+    "spmta.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.sparkpost.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "sparkpost.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://developers.sparkpost.com/api/sending-domains/",
+     "says": "CNAME verification table: value sparkpostmail.com (eu.sparkpostmail.com for SparkPost EU)",
+     "covers": [
+      "sparkpostmail.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "dns",
+     "url": "https://developers.sparkpost.com/api/sending-domains/",
+     "says": "MX of spmta.com is smtp.sparkpostmail.com and its SPF record is \"v=spf1 exists:%{i}._spf.sparkpostmail.com ~all\"",
+     "covers": [
+      "spmta.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Customer.io",
+   "domains": [
+    "customer.io",
+    "customeriomail.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://customer.io/",
+     "says": "the provider's own website",
+     "covers": [
+      "customer.io"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://docs.customer.io/messaging/channels/email/deliverability/link-tracking-custom-domain/",
+     "says": "default tracking links use customeriomail.com",
+     "covers": [
+      "customeriomail.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Klaviyo",
+   "domains": [
+    "klaviyo.com",
+    "klaviyomail.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.klaviyo.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "klaviyo.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://help.klaviyo.com/hc/en-us/articles/7674941873947",
+     "says": "klaviyomail.com is Klaviyo's shared sending domain",
+     "covers": [
+      "klaviyomail.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "HubSpot",
+   "domains": [
+    "hubspot.com",
+    "hubspotemail.net"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.hubspot.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "hubspot.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://knowledge.hubspot.com/marketing-email/manage-email-authentication-in-hubspot",
+     "says": "SPF include under hubspotemail.net",
+     "covers": [
+      "hubspotemail.net"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Netcore",
+   "domains": [
+    "netcorecloud.com",
+    "netcorecloud.net",
+    "netcore.co.in",
+    "ftrans01.com",
+    "ftrans02.com",
+    "ftrans03.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://netcorecloud.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "netcorecloud.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://emaildocs.netcorecloud.com/docs/what-is-a-sending-domain-how-to-set-up-sending-domains",
+     "says": "sending-domain records point at netcorecloud.net",
+     "covers": [
+      "netcorecloud.net"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "dns",
+     "url": "https://emaildocs.netcorecloud.com/docs/what-is-a-sending-domain-how-to-set-up-sending-domains",
+     "says": "MX of netcorecloud.net is cluster2/3/6/8.netcore.co.in, the same hosts as netcore.co.in's own MX",
+     "covers": [
+      "netcore.co.in"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "dns",
+     "url": "https://emaildocs.netcorecloud.com/docs/what-is-a-sending-domain-how-to-set-up-sending-domains",
+     "says": "MX of ftrans03.com is bh1.netcore.co.in; SPF of ftrans01.com is \"v=spf1 mx a include:netcore.co.in ~all\"; SPF of ftrans02.com includes 74169bb6.spf2.netcorecloud.net",
+     "covers": [
+      "ftrans01.com",
+      "ftrans02.com",
+      "ftrans03.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Brevo",
+   "domains": [
+    "brevo.com",
+    "sendinblue.com",
+    "mailinblue.com",
+    "mailin.fr",
+    "sender-sib.com",
+    "sp1-brevo.net",
+    "sp2-brevo.net",
+    "sp3-brevo.net",
+    "sp9-brevo.net",
+    "tsp1-brevo.net"
+   ],
+   "patterns": [
+    "^sendib[mt][0-4]\\.com$"
+   ],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.brevo.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "brevo.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "site",
+     "url": "https://www.sendinblue.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "sendinblue.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://help.brevo.com/hc/en-us/articles/208848409-Brevo-IP-ranges-improve-the-deliverability-of-B2B-emails",
+     "says": "lists Brevo sending domains mailinblue.com, mailin.fr, sender-sib.com, sendibm1-4.com, sendibt1-4.com, sp1/sp2/sp3/sp9-brevo.net, tsp1-brevo.net",
+     "covers": [
+      "mailinblue.com",
+      "mailin.fr",
+      "sender-sib.com",
+      "sp1-brevo.net",
+      "sp2-brevo.net",
+      "sp3-brevo.net",
+      "sp9-brevo.net",
+      "tsp1-brevo.net",
+      "^sendib[mt][0-4]\\.com$"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "MailerLite",
+   "domains": [
+    "mailerlite.com",
+    "mlsend.com",
+    "mlsend2.com",
+    "mlflow.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.mailerlite.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "mailerlite.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://www.mailerlite.com/help/what-is-mlsend",
+     "says": "mlsend.com (and mlsend2.com, mlflow.com) are MailerLite's sending domains",
+     "covers": [
+      "mlsend.com",
+      "mlsend2.com",
+      "mlflow.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Zoho Campaigns",
+   "domains": [
+    "maillist-manage.com",
+    "maillist-manage.in",
+    "maillist-manage.eu",
+    "zcsend.in",
+    "zcsend.net"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "doc",
+     "url": "https://www.zoho.com/campaigns/maillist-manage/",
+     "says": "Zoho Campaigns page explaining maillist-manage domains",
+     "covers": [
+      "maillist-manage.com",
+      "maillist-manage.in",
+      "maillist-manage.eu"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "dns",
+     "url": "https://www.zoho.com/campaigns/maillist-manage/",
+     "says": "NS of zcsend.in and zcsend.net is ns1.zohocorp.com; MX of zcsend.in is mx.zoho.in",
+     "covers": [
+      "zcsend.in",
+      "zcsend.net"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Iterable",
+   "domains": [
+    "iterable.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://iterable.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "iterable.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://support.iterable.com/hc/en-us/articles/7130133854612-Email-Setup",
+     "says": "links.iterable.com is Iterable's link domain",
+     "covers": [
+      "iterable.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "MoEngage",
+   "domains": [
+    "moengage.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.moengage.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "moengage.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://www.moengage.com/docs/user-guide/campaigns-and-channels/email/getting-started-with-email/list-unsubscribe-email",
+     "says": "https://api-0x.moengage.com/v1/emailunsubscribe",
+     "covers": [
+      "moengage.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "CleverTap",
+   "domains": [
+    "clevertap.com",
+    "clevertap-prod.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://clevertap.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "clevertap.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://raw.githubusercontent.com/CleverTap/clevertap-ios-sdk/master/docs/CustomDomainSetup.md",
+     "says": "Origin Domain: eu1.clevertap-prod.com",
+     "covers": [
+      "clevertap-prod.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Mailjet",
+   "domains": [
+    "mailjet.com",
+    "mjt.lu"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.mailjet.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "mailjet.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://documentation.mailjet.com/hc/en-us/articles/360042750394-Can-I-customize-the-tracking-links",
+     "says": "default tracking links use mjt.lu",
+     "covers": [
+      "mjt.lu"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Adobe Campaign",
+   "domains": [
+    "adobe-campaign.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "dns",
+     "url": "https://business.adobe.com/products/campaign.html",
+     "says": "MX of adobe-campaign.com is inbound.campaign.adobe.com",
+     "covers": [
+      "adobe-campaign.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Marketo",
+   "domains": [
+    "marketo.com",
+    "mktomail.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.marketo.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "marketo.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "dns",
+     "url": "https://www.marketo.com/",
+     "says": "NS of mktomail.com is ns1.marketo.com",
+     "covers": [
+      "mktomail.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Campaign Monitor",
+   "domains": [
+    "campaignmonitor.com",
+    "createsend.com",
+    "cmail19.com",
+    "cmail20.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.campaignmonitor.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "campaignmonitor.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://www.campaignmonitor.com/api/v3-3/getting-started/",
+     "says": "https://api.createsend.com/api/v3.3/clients.json",
+     "covers": [
+      "createsend.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "dns",
+     "url": "https://www.campaignmonitor.com/api/v3-3/getting-started/",
+     "says": "MX of cmail19.com and cmail20.com is mx20/mx21.inbound.createsend.com",
+     "covers": [
+      "cmail19.com",
+      "cmail20.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Constant Contact",
+   "domains": [
+    "rs6.net"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "dns",
+     "url": "https://www.constantcontact.com/",
+     "says": "MX of rs6.net is edgemail1.constantcontact.com and edgemail2.constantcontact.com",
+     "covers": [
+      "rs6.net"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Salesforce Marketing Cloud",
+   "domains": [
+    "salesforce.com",
+    "exacttarget.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.salesforce.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "salesforce.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "dns",
+     "url": "https://www.salesforce.com/",
+     "says": "the SPF record of exacttarget.com includes salesforce.com (\"include:salesforce.com\")",
+     "covers": [
+      "exacttarget.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Braze",
+   "domains": [
+    "braze.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.braze.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "braze.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Intercom",
+   "domains": [
+    "intercom.com",
+    "intercom-mail.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.intercom.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "intercom.com"
+     ],
+     "checked_on": "2026-10-25"
+    },
+    {
+     "kind": "doc",
+     "url": "https://www.intercom.com/help/en/articles/6522819-automatically-forward-emails-to-the-help-desk",
+     "says": "your default inbound email address might look like this: kz2agh8w@myworkspace.intercom-mail.com",
+     "covers": [
+      "intercom-mail.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "WebEngage",
+   "domains": [
+    "webengage.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://webengage.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "webengage.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Vero",
+   "domains": [
+    "getvero.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.getvero.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "getvero.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Substack",
+   "domains": [
+    "substack.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://substack.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "substack.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "beehiiv",
+   "domains": [
+    "beehiiv.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.beehiiv.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "beehiiv.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Ghost",
+   "domains": [
+    "ghost.org"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://ghost.org/",
+     "says": "the provider's own website",
+     "covers": [
+      "ghost.org"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Acoustic",
+   "domains": [
+    "acoustic.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://acoustic.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "acoustic.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Medallia",
+   "domains": [
+    "medallia.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.medallia.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "medallia.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Zendesk",
+   "domains": [
+    "zendesk.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://www.zendesk.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "zendesk.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  },
+  {
+   "name": "Kit",
+   "domains": [
+    "convertkit.com"
+   ],
+   "patterns": [],
+   "sources": [
+    {
+     "kind": "site",
+     "url": "https://convertkit.com/",
+     "says": "the provider's own website",
+     "covers": [
+      "convertkit.com"
+     ],
+     "checked_on": "2026-10-25"
+    }
+   ]
+  }
+ ]
+}

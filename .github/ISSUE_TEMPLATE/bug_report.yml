@@ -1,0 +1,77 @@
+name: Bug report
+description: Something in Clawback does not work as described.
+title: "[Bug]: "
+labels: ["bug"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for reporting. **Do not paste personal data**: no OAuth tokens, app passwords,
+        `client_secret.json`, email contents, real addresses or files from `~/.clawback`. Replace them with
+        made-up ones such as `news@shop.example`.
+        Security problems go through [private reporting](https://github.com/sainisourabh1-oss/clawback/security/advisories/new), not an issue.
+  - type: textarea
+    id: what-happened
+    attributes:
+      label: What happened?
+      description: What did you do, what did you expect, and what happened instead?
+      placeholder: |
+        1. Ran `clawback scan --import takeout.zip`
+        2. Opened the Newsletters tab
+        3. Expected ..., but saw ...
+    validations:
+      required: true
+  - type: dropdown
+    id: connector
+    attributes:
+      label: How did you connect?
+      options:
+        - Demo mailbox
+        - Google Takeout / .mbox / .eml import
+        - "Gmail: sign in with Google"
+        - "Gmail: fast scan (app password)"
+        - Other provider over IMAP
+        - Outlook.com / Microsoft 365
+        - Proton Mail through Bridge
+        - Not related to a connector
+    validations:
+      required: true
+  - type: dropdown
+    id: interface
+    attributes:
+      label: Where did it happen?
+      options:
+        - Web app (clawback / clawback ui)
+        - Command line
+        - Both
+    validations:
+      required: true
+  - type: input
+    id: version
+    attributes:
+      label: Clawback version
+      description: Output of `clawback version`.
+    validations:
+      required: true
+  - type: input
+    id: environment
+    attributes:
+      label: Operating system, Python version and browser
+      placeholder: Windows 11, Python 3.12.4, Edge 141
+    validations:
+      required: true
+  - type: textarea
+    id: logs
+    attributes:
+      label: Error output or screenshots (redacted)
+      description: Paste the error text or attach screenshots, with personal data removed.
+      render: text
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: I removed tokens, passwords, email contents and real addresses from this report.
+          required: true
+        - label: I searched existing issues for this problem.
+          required: true

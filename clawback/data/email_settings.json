@@ -1,0 +1,14 @@
+{
+  "_about": "Where to turn off a company's emails when its messages carry no List-Unsubscribe header. Only entries checked on the company's own help pages; 'checked_on' is the date. Steps are paraphrased from the help page.",
+  "entries": {
+    "pinterest.com": {
+      "service": "Pinterest",
+      "help": "https://help.pinterest.com/en/article/want-to-stop-receiving-email",
+      "steps": ["Log in on the web and open Settings (the more-options icon, bottom left).",
+                "Open Notifications in the left menu.",
+                "Expand 'How you get notifications' and switch off Email, then Save.",
+                "Pinterest says the change can take a day or two."],
+      "checked_on": "2026-10-24"
+    }
+  }
+}

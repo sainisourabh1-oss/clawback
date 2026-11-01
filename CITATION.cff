@@ -1,0 +1,21 @@
+cff-version: 1.2.0
+message: "If you refer to Clawback in your work, please cite it as below."
+title: "Clawback: local, privacy-first email cleanup"
+type: software
+version: "2.0.0"
+authors:
+  - name: "Clawback contributors"
+abstract: >-
+  Clawback is a local, privacy-first email cleanup tool: bulk unsubscribe and delete with a two-click double
+  confirmation, a paid-subscription finder with savings per currency, proof-of-unsubscribe tracking,
+  regional recurring-payment finders and data-deletion request drafts. It runs on the user's computer
+  as a local web app and command-line tool.
+repository-code: "https://github.com/sainisourabh1-oss/clawback"
+url: "https://github.com/sainisourabh1-oss/clawback"
+license: MIT
+keywords:
+  - email
+  - unsubscribe
+  - privacy
+  - subscriptions
+  - local-first

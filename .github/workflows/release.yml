@@ -1,0 +1,88 @@
+name: Release
+
+# Push a tag such as v2.0.0 (it must match clawback.__version__) to build the sdist and wheel, check them,
+# and attach them to a GitHub Release. Publishing to PyPI is prepared below but switched off until a PyPI
+# trusted publisher is configured (see docs/maintainers/REPO_SETUP.md).
+
+on:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: read
+
+jobs:
+  build:
+    name: build and check
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    steps:
+      - uses: actions/checkout@3d3c42e5aac5ba805825da76410c181273ba90b1 # v7.0.1
+        with:
+          persist-credentials: false
+      - uses: actions/setup-python@6d4fd22b20465ccc0f7354476588e8df7c9ca0e0 # v7.1.0
+        with:
+          python-version: "3.12"
+      - name: Tag matches the package version
+        run: |
+          version=$(python -c "import re; print(re.search(r'__version__ = \"([^\"]+)\"', open('clawback/__init__.py', encoding='utf-8').read()).group(1))")
+          if [ "v${version}" != "${GITHUB_REF_NAME}" ]; then
+            echo "::error::Tag ${GITHUB_REF_NAME} does not match clawback.__version__ ${version}"
+            exit 1
+          fi
+      - name: Build
+        run: |
+          python -m pip install --upgrade pip build twine
+          python -m build
+          python -m twine check --strict dist/*
+      - name: Smoke-test the wheel in a fresh venv
+        run: python scripts/wheel_smoke.py
+      - uses: actions/upload-artifact@cf430e030ddbb5b0abf93d22962f4752f3646cd9 # v7.0.2
+        with:
+          name: dist
+          path: dist/
+          if-no-files-found: error
+
+  github-release:
+    name: GitHub Release
+    needs: build
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+        with:
+          name: dist
+          path: dist/
+      - name: Create the release with the built files
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh release create "${GITHUB_REF_NAME}" dist/* \
+            --repo "${GITHUB_REPOSITORY}" \
+            --title "Clawback ${GITHUB_REF_NAME}" \
+            --generate-notes \
+            --verify-tag
+
+  # PyPI publishing (trusted publishing, no API token). Off until the operator:
+  #   1. creates the "clawback" project on PyPI (or a pending publisher) with this repository,
+  #      workflow file "release.yml" and environment "pypi";
+  #   2. creates the "pypi" environment in the repository settings (optionally with required reviewers);
+  #   3. uncomments the job below.
+  #
+  # pypi-publish:
+  #   name: publish to PyPI
+  #   needs: build
+  #   runs-on: ubuntu-latest
+  #   environment:
+  #     name: pypi
+  #     url: https://pypi.org/p/clawback
+  #   permissions:
+  #     id-token: write
+  #   steps:
+  #     - uses: actions/download-artifact@9000827ccba6bdab643e8b6fd33ac0654aef8333 # v8.0.2
+  #       with:
+  #         name: dist
+  #         path: dist/
+  #     - uses: pypa/gh-action-pypi-publish@7245906fb61fa33a13554f9d5fb856fe61758086 # v1.14.3

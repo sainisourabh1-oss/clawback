@@ -1,0 +1,58 @@
+name: Feature request
+description: Suggest an improvement, a new connector or a new regional module.
+title: "[Feature]: "
+labels: ["enhancement"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for the idea. Clawback stays local-only and asks for a two-click confirmation before every
+        action; suggestions that keep both are the easiest to accept. Open questions fit better in
+        [Discussions](https://github.com/sainisourabh1-oss/clawback/discussions).
+  - type: textarea
+    id: problem
+    attributes:
+      label: What problem would this solve?
+      description: Describe the situation, not only the solution.
+      placeholder: When I ..., I have to ..., because ...
+    validations:
+      required: true
+  - type: textarea
+    id: proposal
+    attributes:
+      label: What would you like Clawback to do?
+    validations:
+      required: true
+  - type: dropdown
+    id: area
+    attributes:
+      label: Area
+      options:
+        - Unsubscribe / block / cleanup actions
+        - Paid subscriptions and savings
+        - Regional module (bank or mandate alerts, privacy laws, cancellation pages)
+        - Connector (a mail provider or import format)
+        - Web app
+        - Command line
+        - Documentation
+        - Other
+    validations:
+      required: true
+  - type: textarea
+    id: sources
+    attributes:
+      label: Sources (for regional rules, cancellation pages or provider settings)
+      description: Link the official pages that describe the format, the law or the steps. Clawback only ships rules it can source.
+  - type: textarea
+    id: alternatives
+    attributes:
+      label: Alternatives you have considered
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Checks
+      options:
+        - label: This keeps processing on the user's own computer and keeps the two-click confirmation before any action.
+          required: true
+        - label: I searched existing issues and discussions.
+          required: true

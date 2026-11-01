@@ -1,0 +1,23 @@
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.venv/
+build/
+dist/
+*.egg-info/
+.env
+.unsubscribe/
+client_secret.json
+token.json
+subscriptions.csv
+
+*.sqlite3
+*.sqlite3-shm
+*.sqlite3-wal
+*.csv
+
+# Claude Code local worktrees and settings
+.claude/
+
+# Internal working log (operator mailbox details) - kept local only
+PROJECT_STATUS.md

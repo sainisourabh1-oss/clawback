@@ -1,0 +1,10 @@
+# Template only: no funding account is set up for Clawback.
+# GitHub shows a "Sponsor" button only for keys that are uncommented and filled in.
+# Uncomment a line and add a real account name once one exists. Do not add accounts that do not exist.
+# Reference: https://docs.github.com/en/repositories/managing-your-repositorys-settings-and-features/customizing-your-repository/displaying-a-sponsor-button-in-your-repository
+
+# github: []            # GitHub Sponsors usernames, e.g. [your-username]
+# open_collective:      # Open Collective project slug
+# ko_fi:                # Ko-fi username
+# liberapay:            # Liberapay username
+# custom: []            # Up to 4 other links, e.g. ["https://example.org/donate"]

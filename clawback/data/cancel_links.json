@@ -1,0 +1,275 @@
+{
+ "_about": "Cancellation pages checked by hand. 'how' says how each URL was verified on 'verified_on'. Add entries only after checking them; never guess URLs.",
+ "links": [
+  {
+   "domain": "netflix.com",
+   "service": "Netflix",
+   "url": "https://www.netflix.com/cancelplan",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "spotify.com",
+   "service": "Spotify",
+   "url": "https://www.spotify.com/account/overview/",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "youtube.com",
+   "service": "YouTube Premium / memberships",
+   "url": "https://www.youtube.com/paid_memberships",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "disneyplus.com",
+   "service": "Disney+",
+   "url": "https://help.disneyplus.com/article/disneyplus-cancel-subscription",
+   "kind": "help",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "official help article loads"
+  },
+  {
+   "domain": "amazon.com",
+   "service": "Amazon Prime (US)",
+   "url": "https://www.amazon.com/gp/primecentral",
+   "kind": "account",
+   "region": "us",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "primevideo.com",
+   "service": "Prime Video",
+   "url": "https://www.primevideo.com/settings",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "apple.com",
+   "service": "Apple subscriptions (App Store, iCloud+, Apple Music, Apple TV+, ...)",
+   "url": "https://support.apple.com/en-us/118428",
+   "kind": "help",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "official help article loads"
+  },
+  {
+   "domain": "one.google.com",
+   "service": "Google One",
+   "url": "https://one.google.com/settings",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "play.google.com",
+   "service": "Google Play subscriptions",
+   "url": "https://play.google.com/store/account/subscriptions",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "microsoft.com",
+   "service": "Microsoft 365 / Xbox / other Microsoft subscriptions",
+   "url": "https://account.microsoft.com/services",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "adobe.com",
+   "service": "Adobe",
+   "url": "https://account.adobe.com/plans",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "official help text (via search) names this URL"
+  },
+  {
+   "domain": "canva.com",
+   "service": "Canva",
+   "url": "https://www.canva.com/settings/billing-and-teams",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "openai.com",
+   "service": "ChatGPT",
+   "url": "https://help.openai.com/en/articles/7232927",
+   "kind": "help",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "official help article loads"
+  },
+  {
+   "domain": "anthropic.com",
+   "service": "Claude",
+   "url": "https://support.claude.com/en/articles/8325617",
+   "kind": "help",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "official help article loads"
+  },
+  {
+   "domain": "linkedin.com",
+   "service": "LinkedIn Premium",
+   "url": "https://www.linkedin.com/premium/manage/",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "audible.com",
+   "service": "Audible",
+   "url": "https://help.audible.com/s/article/cancel-membership",
+   "kind": "help",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "official help article loads"
+  },
+  {
+   "domain": "dropbox.com",
+   "service": "Dropbox",
+   "url": "https://www.dropbox.com/account/plan",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "nytimes.com",
+   "service": "The New York Times",
+   "url": "https://help.nytimes.com/hc/en-us/articles/360003499613",
+   "kind": "help",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "official help article loads"
+  },
+  {
+   "domain": "deezer.com",
+   "service": "Deezer",
+   "url": "https://www.deezer.com/account/subscription",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "steampowered.com",
+   "service": "Steam subscriptions",
+   "url": "https://store.steampowered.com/account/subscriptions",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "aws.amazon.com",
+   "service": "AWS billing",
+   "url": "https://console.aws.amazon.com/billing/home",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "page loads (HTTP 200)"
+  },
+  {
+   "domain": "amazon.in",
+   "service": "Amazon Prime (India)",
+   "url": "https://www.amazon.in/gp/primecentral",
+   "kind": "account",
+   "region": "in",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "amazon.co.uk",
+   "service": "Amazon Prime (UK)",
+   "url": "https://www.amazon.co.uk/gp/primecentral",
+   "kind": "account",
+   "region": "eu",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "audible.co.uk",
+   "service": "Audible (UK)",
+   "url": "https://www.audible.co.uk/account/overview",
+   "kind": "account",
+   "region": "eu",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "amazon.de",
+   "service": "Amazon Prime (Germany)",
+   "url": "https://www.amazon.de/gp/primecentral",
+   "kind": "account",
+   "region": "eu",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "amazon.fr",
+   "service": "Amazon Prime (France)",
+   "url": "https://www.amazon.fr/gp/primecentral",
+   "kind": "account",
+   "region": "eu",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "amazon.es",
+   "service": "Amazon Prime (Spain)",
+   "url": "https://www.amazon.es/gp/primecentral",
+   "kind": "account",
+   "region": "eu",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "amazon.it",
+   "service": "Amazon Prime (Italy)",
+   "url": "https://www.amazon.it/gp/primecentral",
+   "kind": "account",
+   "region": "eu",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "amazon.ca",
+   "service": "Amazon Prime (Canada)",
+   "url": "https://www.amazon.ca/gp/primecentral",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  },
+  {
+   "domain": "amazon.co.jp",
+   "service": "Amazon Prime (Japan)",
+   "url": "https://www.amazon.co.jp/gp/primecentral",
+   "kind": "account",
+   "region": "global",
+   "verified_on": "2026-10-24",
+   "how": "sign-in page that returns to this URL"
+  }
+ ]
+}

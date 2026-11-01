@@ -1,0 +1,233 @@
+{
+  "_about": "Mail provider presets and connector labels. Every server name, port, security mode and policy here comes from the provider's own help page listed under 'sources', read on the date given. Folder names are NOT stored: Clawback asks the server for its special-use folders (RFC 6154: \\All, \\Archive, \\Junk, \\Trash, \\Sent), which works whatever language the folders are named in. Labels: VERIFIED = run against the real service; TESTED WITH FAKES = run only against simulated servers in the test suite; EXPERIMENTAL = written from the official documentation, simulated only, with known open questions. Re-check a provider's page before changing its entry, and update checked_on.",
+  "labels": {
+    "verified": {"text": "Verified", "detail": "Run against the real service."},
+    "fakes": {"text": "Tested with fakes", "detail": "Tested only against simulated servers. Settings come from the provider's own help page, but no real account has been connected yet."},
+    "experimental": {"text": "Experimental", "detail": "Written from the official documentation and tested only against simulated servers. No real account has been connected yet; expect rough edges."}
+  },
+  "connectors": [
+    {"id": "takeout", "name": "Google Takeout or .mbox / .eml import", "label": "fakes",
+     "detail": "Tested with synthetic exports (zip, tgz, mbox, eml folder, 5,000 messages). No real Takeout export has been imported by the test suite."},
+    {"id": "gmail_api", "name": "Gmail: sign in with Google (read-only)", "label": "verified",
+     "detail": "Reading was run against a real Gmail account (3,000 messages, 2026-10). One real one-click unsubscribe returned HTTP 204. Archive, Trash, Spam, filters and sending through the API are tested with fakes only."},
+    {"id": "gmail_imap", "name": "Gmail: fast scan with an app password", "label": "fakes",
+     "detail": "Tested with a simulated Gmail IMAP server, including Gmail's own search and message ids."},
+    {"id": "imap_presets", "name": "Other providers over IMAP (presets below)", "label": "fakes",
+     "detail": "Tested with simulated IMAP servers: wrong password, app password needed, TLS failure, folders in other languages. Not yet connected to any real provider."},
+    {"id": "outlook_graph", "name": "Outlook.com and Microsoft 365: sign in with Microsoft", "label": "experimental",
+     "detail": "Built from Microsoft's documentation for desktop apps (authorization code + PKCE, loopback redirect, Microsoft Graph Mail.Read). Tested only against a fake Microsoft sign-in and a fake Graph server. Needs your own free app registration."},
+    {"id": "proton_bridge", "name": "Proton Mail through Proton Mail Bridge", "label": "experimental",
+     "detail": "Bridge runs on your own computer and uses a certificate it makes itself; Proton's pages do not say which name that certificate is issued for, so Clawback trusts only the certificate file you export from Bridge. Tested with fakes only."}
+  ],
+  "providers": [
+    {
+      "id": "gmail", "name": "Gmail", "domains": ["gmail.com", "googlemail.com"],
+      "auth": "gmail",
+      "note": "Use the Gmail options: sign in with Google (read-only) or the fast scan with an app password.",
+      "imap": {"host": "imap.gmail.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "smtp.gmail.com", "port": 465, "security": "ssl"},
+      "app_password": {"url": "https://myaccount.google.com/apppasswords", "needs": "2-Step Verification",
+                       "help": "https://support.google.com/accounts/answer/185833"},
+      "sources": [
+        {"url": "https://developers.google.com/workspace/gmail/imap/imap-smtp", "checked_on": "2026-10-25",
+         "says": "imap.gmail.com:993 requires SSL; smtp.gmail.com port 465 (SSL) or 587 (TLS); XOAUTH2 supported. Page last updated 2026-09-15."},
+        {"url": "https://support.google.com/accounts/answer/185833", "checked_on": "2026-10-25",
+         "says": "App passwords only with 2-Step Verification; not available for security-key-only 2SV, work or school accounts, or Advanced Protection. 'App passwords aren't recommended and are unnecessary in most cases.'"},
+        {"url": "https://support.google.com/mail/answer/7126229", "checked_on": "2026-10-25",
+         "says": "Since January 2025 the Enable/Disable IMAP switch is gone; IMAP stays on."}
+      ]
+    },
+    {
+      "id": "outlook", "name": "Outlook.com, Hotmail, Live", "domains": ["outlook.com", "hotmail.com", "live.com", "msn.com"],
+      "auth": "oauth_only",
+      "blocked": "Microsoft switched off password and app-password sign-in for Outlook.com, Hotmail and Live mailboxes on 16 September 2024. An app password will be refused. Use 'Sign in with Microsoft' instead.",
+      "imap": {"host": "outlook.office365.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "smtp-mail.outlook.com", "port": 587, "security": "starttls"},
+      "sources": [
+        {"url": "https://support.microsoft.com/en-us/office/pop-imap-and-smtp-settings-for-outlook-com-d088b986-291d-42b8-9564-9c414e2aa040", "checked_on": "2026-10-25",
+         "says": "IMAP outlook.office365.com 993 SSL/TLS, SMTP smtp-mail.outlook.com 587 STARTTLS, authentication 'OAuth2/Modern Auth'. 'Outlook.com requires the use of Modern Auth / OAuth2.'"},
+        {"url": "https://support.microsoft.com/en-us/topic/c5d65390-9676-4763-b41f-d7986499a90d", "checked_on": "2026-10-25",
+         "says": "'September 16th, 2024: Basic Authentication no longer available to access any Outlook account.' (Last updated 10 June 2024.)"},
+        {"url": "https://learn.microsoft.com/en-us/exchange/client-developer/legacy-protocols/how-to-authenticate-an-imap-pop-smtp-application-by-using-oauth", "checked_on": "2026-10-25",
+         "says": "OAuth2 for IMAP/POP/SMTP is available for Microsoft 365 and Outlook.com users (XOAUTH2)."}
+      ]
+    },
+    {
+      "id": "yahoo", "name": "Yahoo Mail", "domains": ["yahoo.com", "ymail.com", "rocketmail.com"], "domain_prefixes": ["yahoo."],
+      "auth": "app_password",
+      "imap": {"host": "imap.mail.yahoo.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "smtp.mail.yahoo.com", "port": 465, "security": "ssl"},
+      "app_password": {"url": "https://help.yahoo.com/kb/SLN15241.html", "needs": null,
+                       "help": "https://help.yahoo.com/kb/SLN15241.html"},
+      "sources": [
+        {"url": "https://help.yahoo.com/kb/SLN4075.html", "checked_on": "2026-10-25",
+         "says": "IMAP imap.mail.yahoo.com 993, requires SSL; SMTP smtp.mail.yahoo.com 465 or 587, requires SSL; full email address; password: 'Generate App Password'."},
+        {"url": "https://help.yahoo.com/kb/SLN15241.html", "checked_on": "2026-10-25",
+         "says": "App passwords are created on the Yahoo Account Security page under 'External connections'."}
+      ]
+    },
+    {
+      "id": "icloud", "name": "iCloud Mail", "domains": ["icloud.com", "me.com", "mac.com"],
+      "auth": "app_password", "imap_user": "local_part_first",
+      "imap": {"host": "imap.mail.me.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "smtp.mail.me.com", "port": 587, "security": "starttls"},
+      "app_password": {"url": "https://support.apple.com/en-us/102654", "needs": "two-factor authentication",
+                       "help": "https://support.apple.com/en-us/102654"},
+      "note": "Apple says the IMAP user name is usually the part of your address before the @ (if that fails, the full address). Clawback tries both.",
+      "sources": [
+        {"url": "https://support.apple.com/en-us/102525", "checked_on": "2026-10-25",
+         "says": "IMAP imap.mail.me.com 993 SSL; user name usually the name without @icloud.com; app-specific password. SMTP smtp.mail.me.com 587, SSL required (TLS/STARTTLS), full address. Published 3 February 2026."},
+        {"url": "https://support.apple.com/en-us/102654", "checked_on": "2026-10-25",
+         "says": "App-specific passwords at account.apple.com > Sign-In and Security; needs two-factor authentication. Published 8 October 2025."}
+      ]
+    },
+    {
+      "id": "aol", "name": "AOL Mail", "domains": ["aol.com"],
+      "auth": "app_password",
+      "imap": {"host": "imap.aol.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "smtp.aol.com", "port": 465, "security": "ssl"},
+      "app_password": {"url": "https://help.aol.com/articles/create-and-manage-app-password", "needs": null,
+                       "help": "https://help.aol.com/articles/create-and-manage-app-password"},
+      "note": "Verizon.net addresses on AOL Mail use different settings and are not covered by this preset.",
+      "sources": [
+        {"url": "https://help.aol.com/articles/how-do-i-use-other-email-applications-to-send-and-receive-my-aol-mail", "checked_on": "2026-10-25",
+         "says": "IMAP imap.aol.com IMAP-993-SSL; SMTP smtp.aol.com SMTP-465-SSL; full address including @aol.com. Article updated 4 March 2025."},
+        {"url": "https://help.aol.com/articles/create-and-manage-app-password", "checked_on": "2026-10-25",
+         "says": "Third-party email apps that do not use AOL's sign-in page 'require' an app password: AOL Account Security page > Generate app password. Article updated 17 April 2024."}
+      ]
+    },
+    {
+      "id": "zoho", "name": "Zoho Mail (personal or free plan)", "domains": ["zoho.com", "zohomail.com"],
+      "auth": "app_password",
+      "imap": {"host": "imap.zoho.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "smtp.zoho.com", "port": 465, "security": "ssl"},
+      "app_password": {"url": "https://www.zoho.com/mail/help/adminconsole/two-factor-authentication.html", "needs": "two-factor authentication (only then)",
+                       "help": "https://www.zoho.com/mail/help/imap-access.html"},
+      "enable_first": "Turn on IMAP first: Zoho Mail Settings > Mail Accounts > your address > IMAP Access.",
+      "note": "Accounts in other Zoho data centres (for example the EU or India) show their own server names under Settings > Mail Accounts > Server Configuration Details. Paid plans on your own domain use the 'Zoho Mail (own domain)' preset.",
+      "sources": [
+        {"url": "https://www.zoho.com/mail/help/imap-access.html", "checked_on": "2026-10-25",
+         "says": "Personal and free organization users: imap.zoho.com 993 SSL, smtp.zoho.com 465 SSL or 587 TLS. Paid custom-domain users: imappro.zoho.com / smtppro.zoho.com. IMAP access must be enabled first. With 2FA an application-specific password may be needed."}
+      ]
+    },
+    {
+      "id": "zoho_pro", "name": "Zoho Mail (own domain, paid plan)", "domains": [],
+      "auth": "app_password",
+      "imap": {"host": "imappro.zoho.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "smtppro.zoho.com", "port": 465, "security": "ssl"},
+      "app_password": {"url": "https://www.zoho.com/mail/help/adminconsole/two-factor-authentication.html", "needs": "two-factor authentication (only then)",
+                       "help": "https://www.zoho.com/mail/help/imap-access.html"},
+      "enable_first": "Turn on IMAP first: Zoho Mail Settings > Mail Accounts > your address > IMAP Access.",
+      "note": "Accounts in other Zoho data centres show their own server names under Settings > Mail Accounts > Server Configuration Details.",
+      "sources": [
+        {"url": "https://www.zoho.com/mail/help/imap-access.html", "checked_on": "2026-10-25",
+         "says": "Paid organization users with a custom domain: imappro.zoho.com 993 SSL; smtppro.zoho.com 465 SSL or 587 TLS."}
+      ]
+    },
+    {
+      "id": "fastmail", "name": "Fastmail", "domains": ["fastmail.com", "fastmail.fm"],
+      "auth": "app_password",
+      "imap": {"host": "imap.fastmail.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "smtp.fastmail.com", "port": 465, "security": "ssl"},
+      "app_password": {"url": "https://www.fastmail.help/hc/en-us/articles/360058752854-App-passwords", "needs": null,
+                       "help": "https://www.fastmail.help/hc/en-us/articles/360058752854-App-passwords"},
+      "note": "Fastmail's Basic plan has no IMAP access, so it cannot make app passwords.",
+      "sources": [
+        {"url": "https://www.fastmail.help/hc/en-us/articles/1500000278342-Server-names-and-ports", "checked_on": "2026-10-25",
+         "says": "IMAP imap.fastmail.com 993 SSL/TLS (not STARTTLS); SMTP smtp.fastmail.com 465 SSL/TLS (587 STARTTLS for STARTTLS-only clients). 'You cannot use your regular Fastmail password.'"},
+        {"url": "https://www.fastmail.help/hc/en-us/articles/360058752854-App-passwords", "checked_on": "2026-10-25",
+         "says": "Settings > Privacy & Security > Manage app passwords and access > New app password. Basic plans have no IMAP/SMTP access."}
+      ]
+    },
+    {
+      "id": "gmx", "name": "GMX (gmx.com)", "domains": ["gmx.com"],
+      "auth": "password_or_app_password",
+      "imap": {"host": "imap.gmx.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "mail.gmx.com", "port": 465, "security": "ssl"},
+      "app_password": {"url": "https://support.gmx.com/security/2fa/application-specific-passwords.html", "needs": "only if two-factor authentication is on",
+                       "help": "https://support.gmx.com/security/2fa/application-specific-passwords.html"},
+      "enable_first": "Turn on IMAP first: GMX Email > Settings > POP3 & IMAP. GMX switches it off again after a long time without use.",
+      "note": "This preset is for gmx.com addresses. GMX addresses in other countries (such as gmx.de or gmx.net) were not checked; use 'Other IMAP' with the settings from that GMX site.",
+      "sources": [
+        {"url": "https://support.gmx.com/pop-imap/imap/server.html", "checked_on": "2026-10-25",
+         "says": "IMAP imap.gmx.com 993 SSL; SMTP mail.gmx.com 587 STARTTLS or 465 SSL/TLS; TLS 1.2 or 1.3 only."},
+        {"url": "https://support.gmx.com/pop-imap/toggle.html", "checked_on": "2026-10-25",
+         "says": "POP3/IMAP access is off by default; switch it on under Email > Settings > POP3 & IMAP."},
+        {"url": "https://support.gmx.com/security/2fa/application-specific-passwords.html", "checked_on": "2026-10-25",
+         "says": "With two-factor authentication, external programs need an application-specific password."}
+      ]
+    },
+    {
+      "id": "yandex", "name": "Yandex Mail", "domains": ["yandex.com", "yandex.ru", "ya.ru"],
+      "auth": "app_password",
+      "imap": {"host": "imap.yandex.com", "port": 993, "security": "ssl"},
+      "smtp": {"host": "smtp.yandex.com", "port": 465, "security": "ssl"},
+      "app_password": {"url": "https://yandex.com/support/yandex-360/customers/mail/en/mail-clients/others", "needs": null,
+                       "help": "https://yandex.com/support/yandex-360/customers/mail/en/mail-clients/others"},
+      "enable_first": "Turn on IMAP first: Yandex Mail settings > Email clients > 'From the imap.yandex.com server via IMAP' and 'App passwords and OAuth tokens'.",
+      "sources": [
+        {"url": "https://yandex.com/support/yandex-360/customers/mail/en/mail-clients/others", "checked_on": "2026-10-25",
+         "says": "IMAP imap.yandex.com 993 SSL; SMTP smtp.yandex.com 465 SSL; 'enter your username and the app password' (Yandex ID > App passwords, type Mail)."}
+      ]
+    },
+    {
+      "id": "proton", "name": "Proton Mail (through Proton Mail Bridge)", "domains": ["proton.me", "protonmail.com", "pm.me"],
+      "auth": "bridge", "connector": "proton_bridge",
+      "imap": {"host": "127.0.0.1", "port": 1143, "security": "starttls"},
+      "smtp": {"host": "127.0.0.1", "port": 1025, "security": "starttls"},
+      "app_password": {"url": "https://proton.me/support/protonmail-bridge-clients-windows-thunderbird", "needs": "a paid Proton plan and Bridge running on this computer",
+                       "help": "https://proton.me/support/imap-smtp-and-pop3-setup"},
+      "note": "Install and sign in to Proton Mail Bridge first. Use the server, ports and password shown in Bridge under Mailbox details (not your Proton password), and export Bridge's certificate (Settings > Advanced settings > Export TLS certificates) so Clawback can check the connection.",
+      "sources": [
+        {"url": "https://proton.me/support/imap-smtp-and-pop3-setup", "checked_on": "2026-10-25",
+         "says": "'Proton Mail Bridge is currently available only with a paid Proton Mail plan.' Bridge manages the IMAP and SMTP connections; no POP3."},
+        {"url": "https://proton.me/support/port-already-occupied-error", "checked_on": "2026-10-25",
+         "says": "'Bridge uses ports 1143 and 1025 by default'; change them in Settings > Advanced settings > Default ports."},
+        {"url": "https://proton.me/support/comprehensive-guide-to-bridge-settings", "checked_on": "2026-10-25",
+         "says": "Connection mode can be switched between STARTTLS and SSL; Bridge can export its TLS certificate and key."},
+        {"url": "https://proton.me/support/why-you-need-bridge", "checked_on": "2026-10-25",
+         "says": "Bridge's servers 'are accessible only to applications running on the same device'."},
+        {"url": "https://proton.me/support/protonmail-bridge-clients-windows-thunderbird", "checked_on": "2026-10-25",
+         "says": "Use the password shown in Bridge Mailbox details, not your account password; Bridge uses a certificate made on your device that mail apps cannot verify on their own."}
+      ]
+    },
+    {
+      "id": "other", "name": "Other IMAP", "domains": [],
+      "auth": "password_or_app_password",
+      "note": "Use the IMAP and SMTP settings from your provider's own help pages. Many providers need an app password rather than your normal password."
+    }
+  ],
+  "microsoft": {
+    "authority": "https://login.microsoftonline.com",
+    "graph": "https://graph.microsoft.com/v1.0",
+    "tenant_default": "common",
+    "scopes": {
+      "read": "https://graph.microsoft.com/Mail.Read",
+      "modify": "https://graph.microsoft.com/Mail.ReadWrite",
+      "send": "https://graph.microsoft.com/Mail.Send",
+      "rules": "https://graph.microsoft.com/MailboxSettings.ReadWrite"
+    },
+    "sources": [
+      {"url": "https://learn.microsoft.com/en-us/entra/identity-platform/v2-oauth2-auth-code-flow", "checked_on": "2026-10-25",
+       "says": "Authorization code flow with PKCE (S256) for desktop apps; tenant common/organizations/consumers; public clients must not use secrets; redirect http://localhost for apps that use the system browser; refresh tokens with offline_access. ms.date 2026-01-09."},
+      {"url": "https://learn.microsoft.com/en-us/entra/identity-platform/reply-url", "checked_on": "2026-10-25",
+       "says": "For localhost redirect URIs the port is ignored when matching (RFC 8252); http is allowed only for localhost; query parameters are not allowed for apps that sign in personal Microsoft accounts."},
+      {"url": "https://learn.microsoft.com/en-us/entra/identity-platform/quickstart-register-app", "checked_on": "2026-10-25",
+       "says": "Entra admin center > Entra ID > App registrations > New registration; Supported account types 'Any Entra ID Tenant + Personal Microsoft accounts'; record the Application (client) ID."},
+      {"url": "https://learn.microsoft.com/en-us/entra/identity-platform/how-to-add-redirect-uri", "checked_on": "2026-10-25",
+       "says": "Authentication > Add Redirect URI > Mobile and desktop applications > custom redirect URI."},
+      {"url": "https://learn.microsoft.com/en-us/graph/api/user-list-messages?view=graph-rest-1.0", "checked_on": "2026-10-25",
+       "says": "GET /me/messages; Mail.Read is available for personal Microsoft accounts; $top 1 to 1000; follow @odata.nextLink."},
+      {"url": "https://learn.microsoft.com/en-us/graph/outlook-immutable-id", "checked_on": "2026-10-25",
+       "says": "Prefer: IdType=\"ImmutableId\" keeps a message id the same when it is moved to another folder."},
+      {"url": "https://learn.microsoft.com/en-us/graph/outlook-get-mime-message", "checked_on": "2026-10-25",
+       "says": "GET /me/messages/{id}/$value returns the message in MIME format."},
+      {"url": "https://learn.microsoft.com/en-us/graph/api/message-move?view=graph-rest-1.0", "checked_on": "2026-10-25",
+       "says": "POST /me/messages/{id}/move with a well-known folder name (deleteditems, archive, junkemail, inbox); needs Mail.ReadWrite (personal accounts included)."},
+      {"url": "https://learn.microsoft.com/en-us/graph/api/user-sendmail?view=graph-rest-1.0", "checked_on": "2026-10-25",
+       "says": "POST /me/sendMail needs Mail.Send (personal accounts included); returns 202 Accepted."},
+      {"url": "https://learn.microsoft.com/en-us/graph/api/mailfolder-post-messagerules?view=graph-rest-1.0", "checked_on": "2026-10-25",
+       "says": "POST /me/mailFolders/inbox/messageRules needs MailboxSettings.ReadWrite (personal accounts included); 201 Created."}
+    ]
+  }
+}

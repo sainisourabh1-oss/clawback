@@ -24,12 +24,21 @@ honest tally of what you have saved, in every currency you pay in.
 
 ### Install
 
+Pick one (needs Python 3.10 or newer):
+
+| Command | What you get |
+|---|---|
+| `pip install "clawback[gmail]"` | **Everything, including Connect Gmail.** Adds Google's sign-in libraries (about 15 MB). Use this if you have a Gmail account. |
+| `pip install clawback` | The app, the demo, Connect Outlook (Microsoft sign-in, experimental), Yahoo and other mail with an app password, and Google Takeout or `.mbox` import. **No Connect Gmail.** |
+
+Then start it:
+
 ```bash
-pip install "clawback[gmail]"
 clawback
 ```
 
-Needs Python 3.10 or newer. `clawback` opens the app in your browser; try the demo mailbox first.
+It opens the app in your browser; try the demo mailbox first. Installed the smaller one and want Gmail
+later? Run `pip install "clawback[gmail]"`; the app also tells you this if you click Connect Gmail.
 More options in the [Quick start](#quick-start).
 
 <p align="center"><img src="docs/screenshots/hero.png" alt="Clawback's local web app: savings in three currencies, a one-line summary, and the newsletter list sorted by most emails, each sender with Unsubscribe, Delete all and Keep (demo data)" width="900"></p>

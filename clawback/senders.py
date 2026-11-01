@@ -197,6 +197,9 @@ def authenticated_domains(auth: str) -> set[str]:
     return {d.strip(".") for d in out}
 
 
+_ONE_ADDRESS = re.compile(r"[^@\s,;:<>()\[\]\\\"]+@[a-z0-9-]+(?:\.[a-z0-9-]+)+")
+
+
 def check_link(sender_domain: str, uri: str, signed: set[str] | frozenset = frozenset()) -> tuple[str, str] | None:
     """Judge one unsubscribe URI. Returns (level, text) or None when it simply
     belongs to the sender. Levels: "unsafe" (never contacted), "warn" (doesn't
@@ -205,9 +208,11 @@ def check_link(sender_domain: str, uri: str, signed: set[str] | frozenset = froz
     is_mailto = uri.lower().startswith("mailto:")
     if is_mailto:
         addr = mailto_address(uri)
-        host = addr.rsplit("@", 1)[-1] if "@" in addr else ""
-        if not host:
-            return None
+        if not _ONE_ADDRESS.fullmatch(addr):
+            # "a@x.com,b@y.com" would send from your account to every address
+            # in the list, while only the last domain was compared with the sender.
+            return "unsafe", f"unsafe mailto: not exactly one email address ({addr[:80] or 'empty'})"
+        host = addr.rsplit("@", 1)[-1]
     else:
         host = host_of(uri)
         why = suspicious_host(host)

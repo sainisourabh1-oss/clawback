@@ -310,3 +310,16 @@ def test_one_click_connects_to_the_checked_address_not_a_second_lookup(unsub_ser
     r = oneclick.post(f"https://plain.example:{unsub_server.port}/u", context=__import__("ssl").create_default_context(),
                       allow_private=True, resolver=checked)
     assert not r.ok and "network error" in r.detail
+
+
+def test_mailto_unsubscribe_must_name_exactly_one_address():
+    """A mailto: listing several recipients would send an email from your
+    account to all of them; only the last domain used to be compared with
+    the sender's, so a third-party address slipped through unnoticed."""
+    from clawback.senders import check_link
+    assert check_link("sender.com", "mailto:unsub@sender.com?subject=stop") is None
+    for uri in ("mailto:victim@elsewhere.org,unsub@sender.com", "mailto:victim@elsewhere.org%2Cunsub@sender.com",
+                "mailto:a@b.org;unsub@sender.com", "mailto:", "mailto:?to=unsub@sender.com",
+                "mailto:Name <unsub@sender.com>"):
+        verdict = check_link("sender.com", uri)
+        assert verdict and verdict[0] == "unsafe", (uri, verdict)

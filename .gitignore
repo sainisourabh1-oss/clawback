@@ -16,7 +16,7 @@ subscriptions.csv
 *.sqlite3-wal
 *.csv
 
-# Claude Code local worktrees and settings
+# local editor and tool folders
 .claude/
 
 # Internal working log (operator mailbox details) - kept local only
